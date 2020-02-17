@@ -1,8 +1,8 @@
-SELECT Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation , Testing_History , HIV_Status
+SELECT Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation, Mode_of_entry, Testing_History , HIV_Status
 FROM (
 
-		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'PITC' AS 'HIV_Testing_Initiation'
-				, 'Repeat' AS 'Testing_History' , HIV_Status, sort_order
+		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'PITC' AS 'HIV_Testing_Initiation',
+		'Other' AS 'Mode_of_entry', 'Repeat' AS 'Testing_History' , HIV_Status, sort_order
 		FROM
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
@@ -37,6 +37,15 @@ FROM (
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
+								  -- CHECK FOR MODE OF ENTRY
+								 AND o.person_id in (
+									select distinct os.person_id
+									from obs os
+									where os.concept_id = 4238 and os.value_coded = 2143
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									AND patient.voided = 0 AND o.voided = 0
+								 ) 
+								  
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -54,8 +63,8 @@ FROM (
 
 		UNION
 
-		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'PITC' AS 'HIV_Testing_Initiation'
-				, 'New' AS 'Testing_History' , HIV_Status, sort_order
+		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'PITC' AS 'HIV_Testing_Initiation',
+				'Other' AS 'Mode_of_entry', 'New' AS 'Testing_History' , HIV_Status, sort_order
 		FROM
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
@@ -90,6 +99,14 @@ FROM (
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
+								 -- CHECK FOR MODE OF ENTRY
+								 AND o.person_id in (
+									select distinct os.person_id
+									from obs os
+									where os.concept_id = 4238 and os.value_coded = 2143
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									AND patient.voided = 0 AND o.voided = 0
+								 )
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -105,10 +122,10 @@ FROM (
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 
 
-		UNION
+	--	UNION
 
-		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'CITC' AS 'HIV_Testing_Initiation'
-				, 'Repeat' AS 'Testing_History' , HIV_Status, sort_order
+	--	(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'CITC' AS 'HIV_Testing_Initiation',
+				'Other' AS 'Mode_of_entry', 'Repeat' AS 'Testing_History' , HIV_Status, sort_order
 		FROM
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
@@ -127,7 +144,7 @@ FROM (
 								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- PROVIDER INITIATED TESTING AND COUNSELING
-								 AND o.person_id in (
+								 AND o.person_id not in (
 									select distinct os.person_id 
 									from obs os
 									where os.concept_id = 4228 and os.value_coded = 4226
@@ -142,7 +159,15 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
-								 )						 
+								 )				
+								 -- CHECK FOR MODE OF ENTRY
+								 AND o.person_id in (
+									select distinct os.person_id
+									from obs os
+									where os.concept_id = 4238 and os.value_coded = 2143
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									AND patient.voided = 0 AND o.voided = 0
+								 )		 
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -159,8 +184,8 @@ FROM (
 
 		UNION
 
-		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'CITC' AS 'HIV_Testing_Initiation'
-				, 'New' AS 'Testing_History' , HIV_Status, sort_order
+		(SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'CITC' AS 'HIV_Testing_Initiation',
+				'Other' AS 'Mode_of_entry', 'New' AS 'Testing_History' , HIV_Status, sort_order
 		FROM
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
@@ -179,7 +204,7 @@ FROM (
 								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- PROVIDER INITIATED TESTING AND COUNSELING
-								 AND o.person_id in (
+								 AND o.person_id not in (
 									select distinct os.person_id 
 									from obs os
 									where os.concept_id = 4228 and os.value_coded = 4226
@@ -194,7 +219,15 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
-								 )						 
+								 )				
+								 -- CHECK FOR MODE OF ENTRY
+								 AND o.person_id in (
+									select distinct os.person_id
+									from obs os
+									where os.concept_id = 4238 and os.value_coded = 2143
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									AND patient.voided = 0 AND o.voided = 0
+								 )		 
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
