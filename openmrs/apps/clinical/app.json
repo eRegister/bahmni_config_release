@@ -284,13 +284,14 @@
 	    },
 	    "HTC, Repeat Unigold Test": {
 		"required": true
+        },
+        "HTC, DNA PCR Test Results": {
+		"required": false
 	    },
 	    "HTC, SD Bioline Tie Breaker": {
 		"required": true
 	    },
-	    "HTC, DNA PCR Test Results": {
-		"required": true
-	    },
+	    
 	    "HTC, Time Since Test": {
 		"displayMonthAndYear": true,
 		"required": true

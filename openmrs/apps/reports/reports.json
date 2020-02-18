@@ -1,13 +1,26 @@
 {
-        "txcurrcombinedlist": {
-                "name": "Current on ART Detailed (List)",
-                "type": "MRSGeneric",
-                "config": {
-                  "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
-                }
+          "dsd_hts_tst_other": {
+            "name": "DSD: HTS_TST (Facility) - PITC Modality: Other PITC (Pivot)",
+            "type": "MRSGeneric",
+            "config": {
+              "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/other_modality_dsd_hts_tst_pitc_hiv_status_with_history_pivot.sql"
+            }
+        },
+        "dsd_hts_tst_other_list": {
+          "name": "DSD: HTS_TST (Facility) - PITC Modality: Other PITC (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/other_modality_dsd_hts_tst_final_hiv_status_by_service_point_list.sql"
+          }
         },
 
-
+        "txcurrcombinedlist": {
+          "name": "Current on ART Detailed (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
+          }
+        },
         "txcurrcombinedpivot": {
                 "name": "Current on ART Detailed (Pivot)",
                 "type": "MRSGeneric",
@@ -280,16 +293,4 @@
                 }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-}
+      }
