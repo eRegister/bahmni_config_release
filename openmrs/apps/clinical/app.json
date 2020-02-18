@@ -289,7 +289,7 @@
 		"required": true
 	    },
 	    "HTC, DNA PCR Test Results": {
-		"required": true
+		"required": false
 	    },
 	    "HTC, Time Since Test": {
 		"displayMonthAndYear": true,
