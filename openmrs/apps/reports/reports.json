@@ -1,4 +1,12 @@
 {
+
+        "HTS_TST_VMMC": {
+                "name": "HTS_TST_VMMC (List)",
+                "type": "MRSGeneric",
+                "config": {
+                  "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
+                }
+        },
         "txcurrcombinedlist": {
                 "name": "Current on ART Detailed (List)",
                 "type": "MRSGeneric",

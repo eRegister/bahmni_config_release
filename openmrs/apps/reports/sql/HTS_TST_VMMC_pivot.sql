@@ -1,23 +1,11 @@
 SELECT HTS_TOTALS_COLS_ROWS.AgeGroup
 		, HTS_TOTALS_COLS_ROWS.Gender
-		, HTS_TOTALS_COLS_ROWS.New_Positives
-		, HTS_TOTALS_COLS_ROWS.New_Negatives
-		, HTS_TOTALS_COLS_ROWS.Rep_Positives
-		, HTS_TOTALS_COLS_ROWS.Rep_Negatives
 		, HTS_TOTALS_COLS_ROWS.Total
 
 FROM (
 
 			(SELECT HTS_STATUS_DRVD_ROWS.age_group AS 'AgeGroup'
 					, HTS_STATUS_DRVD_ROWS.Gender
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'New', 1, 0))) AS New_Positives
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC'			
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'New', 1, 0))) AS New_Negatives
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives				
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC'
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Testing_History = 'Repeat', 1, 0))) AS Rep_Negatives
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'PITC', 1, 0))) as 'Total'
 						, HTS_STATUS_DRVD_ROWS.sort_order
 			FROM (
@@ -41,11 +29,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS vmmc
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4227
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -90,11 +78,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4227
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -139,11 +127,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- CLIENT INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -187,11 +175,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- CLIENT INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -223,15 +211,7 @@ FROM (
 	UNION ALL
 
 			(SELECT 'Total' AS 'AgeGroup'
-					, 'All' AS 'Gender'
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Positives
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'			
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'New', 1, 0))) AS New_Negatives
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC' 
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Positives				
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC'
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Testing_History = 'Repeat', 1, 0))) AS Rep_Negatives
+					, 'All' AS 'Gender'		
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'PITC', 1, 0))) as 'Total'
 						, 99 AS sort_order
 			FROM (
@@ -252,11 +232,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4227
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -294,11 +274,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4227
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -336,11 +316,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
@@ -378,11 +358,11 @@ FROM (
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
+											 -- MODE OF ENTRY POINT IS VMMC
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
+												where os.concept_id = 4238 and os.value_coded = 4235
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												AND patient.voided = 0 AND o.voided = 0
 											 )
