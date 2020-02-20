@@ -38,7 +38,7 @@ FROM (
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											
+											 -- and o.concept_id=4671
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -84,6 +84,7 @@ FROM (
 									from obs o
 											
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
+											
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -146,6 +147,7 @@ FROM (
 									from obs o 
 											
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
+										
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -184,7 +186,7 @@ FROM (
 
 									from obs o
 											
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
+											 INNER JOIN patient ON o.person_id = patient.patient_id 		
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
