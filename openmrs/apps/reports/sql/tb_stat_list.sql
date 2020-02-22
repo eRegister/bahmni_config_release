@@ -1,12 +1,12 @@
 
-   (SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age , Gender, age_group
+   (SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age , Gender, age_group,HIV_STATUS
 							 
 					FROM
 									(select distinct patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-												--	(select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
+											         	(select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 														   person.gender AS Gender,
 														   observed_age_group.name AS age_group,
 														   observed_age_group.sort_order AS sort_order
@@ -14,7 +14,7 @@
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											
+											  AND o.concept_id =4666
 											 AND patient.voided = 0 AND o.voided = 0
 
 											 AND o.person_id in (
@@ -43,14 +43,14 @@
 
 UNION
 
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender , age_group
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender , age_group,HIV_STATUS
 							 
 					FROM
 									(select distinct patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-												--(select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
+												(select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 														   person.gender AS Gender,
 														   observed_age_group.name AS age_group,
 														   observed_age_group.sort_order AS sort_order
@@ -58,7 +58,7 @@ UNION
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											
+											    AND o.concept_id =4666
 											 AND patient.voided = 0 AND o.voided = 0
 
 											 AND o.person_id in (
@@ -89,14 +89,14 @@ UNION
 									   UNION
 
 									   (
-		SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age , Gender, age_group
+		SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age , Gender, age_group,HIV_STATUS
 							
 					FROM
 									(select distinct patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST(' #endDate#' AS DATE), person.birthdate)/365) AS Age,
-														  -- (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
+														  (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 														   person.gender AS Gender,
 														   observed_age_group.name AS age_group,
 														   observed_age_group.sort_order AS sort_order
@@ -104,7 +104,7 @@ UNION
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-									
+									         AND o.concept_id =4666
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
@@ -132,14 +132,14 @@ UNION
 
 									   UNION
 									   (
-SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender , age_group
+SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender , age_group,HIV_STATUS
 							 
 					FROM
 									(select distinct patient.patient_id AS Id,
 														   patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST(' #endDate#' AS DATE), person.birthdate)/365) AS Age,
-														  -- (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
+														   (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 														   person.gender AS Gender,
 														   observed_age_group.name AS age_group,
 														   observed_age_group.sort_order AS sort_order
@@ -147,7 +147,7 @@ SELECT  patientIdentifier AS "Patient Identifier", patientName AS "Patient Name"
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-										
+										      AND o.concept_id =4666
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
