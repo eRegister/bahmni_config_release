@@ -33,11 +33,11 @@ FROM (
 								 
 								
 								 
-								 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
+								 -- peads as the mode of entry
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
-									where os.concept_id = 4238 and os.value_coded = 2139
+									where os.concept_id = 4238 and os.value_coded = 4788
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
@@ -88,11 +88,11 @@ FROM (
 								 
 								 
 								 
-								 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
+								 -- mode of entry peads
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
-									where os.concept_id = 4238 and os.value_coded = 2139
+									where os.concept_id = 4238 and os.value_coded = 4788
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
@@ -115,6 +115,8 @@ FROM (
 
 
 ) AS HTS_Status_Detailed
+
+where Age <= 4
 
 ORDER BY HTS_Status_Detailed.HIV_Testing_Initiation
 			, HTS_Status_Detailed.Testing_History
