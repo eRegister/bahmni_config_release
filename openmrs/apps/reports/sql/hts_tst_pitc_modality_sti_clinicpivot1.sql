@@ -47,7 +47,7 @@ FROM (
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
-											 -- INPATIENT, MODE OF ENTRY POINT
+											 -- STI, MODE OF ENTRY POINT
 											 AND o.person_id in (
 												select distinct os.person_id
 												from obs os
@@ -96,7 +96,7 @@ FROM (
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
-											 -- INPATIENT, MODE OF ENTRY POINT
+											 -- STI, MODE OF ENTRY POINT
 											 AND o.person_id in (
 												select distinct os.person_id
 												from obs os
@@ -145,7 +145,7 @@ FROM (
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
-											 -- INPATIENT, MODE OF ENTRY
+											 -- STI, MODE OF ENTRY
 											 AND o.person_id in (
 												select distinct os.person_id
 												from obs os
@@ -193,7 +193,7 @@ FROM (
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
-											 -- INPATIENT, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
+											 -- STI, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
 											 AND o.person_id in (
 												select distinct os.person_id
 												from obs os
@@ -255,7 +255,7 @@ FROM (
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
-											 -- INPATIENT, MODE OF ENTRY POINT
+											 -- STI, MODE OF ENTRY POINT
 											 AND o.person_id in (
 												select distinct os.person_id
 												from obs os
@@ -311,90 +311,9 @@ FROM (
 											 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
 									) AS HTSClients_HIV_Status_Total
 					)
+					
 
-					UNION
-
-					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
-							, 'STI' AS 'ENTRY'
-					FROM
-									(select distinct patient.patient_id AS Id,
-														   patient_identifier.identifier AS patientIdentifier,
-														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-														   (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status
-
-									from obs o
-											-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											 AND o.concept_id = 2165
-											 AND patient.voided = 0 AND o.voided = 0
-											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
-											 AND o.person_id in (
-												select distinct os.person_id 
-												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
-												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
-											 )
-											 
-											 -- INPATIENT, MODE OF ENTRY POINT
-											 AND o.person_id in (
-												select distinct os.person_id
-												from obs os
-												where os.concept_id = 4238 and os.value_coded = 2139
-												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
-											 )						 
-											 
-											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-											 INNER JOIN person_name ON person.person_id = person_name.person_id
-											 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-									) AS HTSClients_HIV_Status_Total
-					)
-
-					UNION
-
-					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", HIV_Status, 'CITC' AS 'HIV_Testing_Initiation'
-							, 'STI' AS 'ENTRY'
-					FROM
-									(select distinct patient.patient_id AS Id,
-														   patient_identifier.identifier AS patientIdentifier,
-														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-														   (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status
-
-									from obs o
-											-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											 AND o.concept_id = 2165
-											 AND patient.voided = 0 AND o.voided = 0
-											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-											 
-											 -- PROVIDER INITIATED TESTING AND COUNSELING
-											 AND o.person_id in (
-												select distinct os.person_id 
-												from obs os
-												where os.concept_id = 4228 and os.value_coded = 4226
-												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
-											 )
-											 
-											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
-											 AND o.person_id in (
-												select distinct os.person_id
-												from obs os
-												where os.concept_id = 4238 and os.value_coded = 2139
-												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
-											 )						 
-											 
-											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-											 INNER JOIN person_name ON person.person_id = person_name.person_id
-											 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
-									) AS HTSClients_HIV_Status_Total
-					)
+				
 
 			) AS HTS_STATUS_DRVD_COLS
 		)
