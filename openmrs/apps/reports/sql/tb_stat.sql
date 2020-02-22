@@ -38,7 +38,8 @@ FROM (
 									from obs o
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											 -- and o.concept_id=4671
+											 AND concept_id=	4666
+											  AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -84,7 +85,8 @@ FROM (
 									from obs o
 											
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											
+											 AND concept_id=4666
+											  AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -119,7 +121,7 @@ FROM (
 			ORDER BY HTS_STATUS_DRVD_ROWS.sort_order)
 			
 			
-	UNION ALL
+	UNION 
 
 			(SELECT 'Total' AS 'AgeGroup'
 					, 'All' AS 'Gender'
@@ -147,7 +149,8 @@ FROM (
 									from obs o 
 											
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
-										
+												AND concept_id=4666
+												 AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
@@ -186,7 +189,9 @@ FROM (
 
 									from obs o
 											
-											 INNER JOIN patient ON o.person_id = patient.patient_id 		
+											 INNER JOIN patient ON o.person_id = patient.patient_id 	
+											 AND concept_id=4666	
+											  AND patient.voided = 0 AND o.voided = 0
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
