@@ -16,11 +16,13 @@
 											  AND o.concept_id =3785
 											 AND patient.voided = 0 AND o.voided = 0
 
-											 AND o.person_id in (
+                                           AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 3785 and os.value_coded in (1034,1084)
 												
+                                                AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+												AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 									
