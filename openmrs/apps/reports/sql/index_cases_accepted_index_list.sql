@@ -5,7 +5,7 @@ FROM
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 									   person.gender AS Gender,
-									   observed_age_group.name AS age_group,
+									   observed_age_group.name AS age_group, 
 									   observed_age_group.sort_order AS sort_order
 
                 from obs o
