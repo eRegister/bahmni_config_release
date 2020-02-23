@@ -15,13 +15,13 @@
           }
         },
         
-        "dsd_hts_tst_clients_indexed": {
+        "clientsofferedindex": {
           "name": "Clients offered index (List)",
           "type": "MRSGeneric",
           "config": {
-            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_index.sql"
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_index_list.sql"
           }
-        },
+        },      
 
         "dsd_hts_tst_accepted_index": {
           "name": "Clients accepted indexing (List)",
@@ -30,7 +30,14 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_accepted_index_list.sql"
           }
         },
-
+        
+        "elicited_contacts": {
+          "name": "Index contacts elicited (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_contacts_elicited.sql"
+          }
+        },
         "txcurrcombinedlist": {
           "name": "Current on ART Detailed (List)",
           "type": "MRSGeneric",
