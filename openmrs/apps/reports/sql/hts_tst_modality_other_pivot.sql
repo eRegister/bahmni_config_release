@@ -25,8 +25,7 @@ FROM (
 					(SELECT Id, patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, HIV_Status, 'PITC' AS 'HIV_Testing_Initiation'
 							, 'Repeat' AS 'Testing_History' , sort_order
 					FROM
-									(select distinct patient.patient_id AS Id,
-														   patient_identifier.identifier AS patientIdentifier,
+									(select distinct patient.patient_id AS Id,patient_identifier.identifier AS patientIdentifier,
 														   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 														   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 														   (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,

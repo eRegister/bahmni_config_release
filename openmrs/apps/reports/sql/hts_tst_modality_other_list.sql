@@ -99,7 +99,7 @@ FROM (
 									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
-								 -- CHECK FOR MODE OF ENTRY
+								 -- CHECK FOR MODE OF ENTRY.
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
@@ -112,7 +112,7 @@ FROM (
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-								 
+
 								 -- CALCULATE THE YEAR OF BIRTH AS OF THE END OF THE REPORTING PERIOD
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
