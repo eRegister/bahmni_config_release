@@ -35,7 +35,7 @@ FROM (
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-											-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
+											-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE.
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											 AND o.concept_id = 2165
 											 AND patient.voided = 0 AND o.voided = 0
