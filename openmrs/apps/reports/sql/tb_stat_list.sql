@@ -15,6 +15,7 @@
 										
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
+											  AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 AND patient.voided = 0 AND o.voided = 0
 
 											 AND o.person_id in (
@@ -23,6 +24,7 @@
 												where os.concept_id = 4666 and os.value_coded =4323
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -52,13 +54,15 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4666 and os.value_coded =4324
+												where o.concept_id = 4666 and os.value_coded =4324
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -89,13 +93,15 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4666 and os.value_coded =4664
+												where o.concept_id = 4666 and os.value_coded =4664
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -126,6 +132,7 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
@@ -133,6 +140,7 @@ UNION
 												where os.concept_id = 4666 and os.value_coded =4665
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -162,13 +170,15 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
-												where os.concept_id = 4666 and os.value_coded =4323
+												where o.concept_id = 4666 and os.value_coded =4323
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -198,6 +208,7 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
@@ -235,6 +246,7 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
@@ -272,6 +284,7 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
 											 AND o.person_id in (
 												select distinct os.person_id 
@@ -279,6 +292,7 @@ UNION
 												where os.concept_id = 4666 and os.value_coded =4665
 												
 												AND patient.voided = 0 AND o.voided = 0
+												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
