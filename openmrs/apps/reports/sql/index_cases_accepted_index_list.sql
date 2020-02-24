@@ -10,7 +10,7 @@ FROM
 
                 from obs o
 
-						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
+						-- HTS CLIENTS WITH POSITIVE HIV  STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id
 						 AND o.concept_id = 2165 AND o.value_coded = 1738
 						 AND patient.voided = 0 AND o.voided = 0
