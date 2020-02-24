@@ -128,7 +128,7 @@ FROM
 									   person.gender AS Gender,
 									   observed_age_group.name AS age_group,
 									   observed_age_group.sort_order AS sort_order
-
+ 
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 

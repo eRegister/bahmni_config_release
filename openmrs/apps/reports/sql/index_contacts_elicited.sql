@@ -1,9 +1,16 @@
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'Linked' AS 'Patient health status','Indexed' AS 'Indexing', sort_order
+(SELECT patientIdentifier AS "Patient Identifier", clientName AS "Patient Name", Age, Gender, age_group, 'Linked' AS 'HIV_STATUS', sort_order
 FROM
                 (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
-									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+									  -- concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+									  CONCAT(
+										  (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED'),
+										  (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED')
+										  ) AS clientName 
+	--  (select name from concept_name cn where cn.concept_id = o.value_coded and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
+														  
+									  AS HIV_Status,														 
 									   person.gender AS Gender,
 									   observed_age_group.name AS age_group,
 									   observed_age_group.sort_order AS sort_order
