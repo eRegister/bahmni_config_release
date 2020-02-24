@@ -22,12 +22,27 @@
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_index_list.sql"
           }
         },      
+        
+        "clientsofferedindex_pivot": {
+          "name": "Clients indexing ( Pivot )",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_pivot.sql"
+          }
+        },
 
-        "dsd_hts_tst_accepted_index": {
+        "dsd_hts_tst_accepted_index_list": {
           "name": "Clients accepted indexing (List)",
           "type": "MRSGeneric",
           "config": {
             "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_accepted_index_list.sql"
+          }
+        },
+        "dsd_hts_tst_accepted_index_pivot": {
+          "name": "Clients accepted indexing (Pivot)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_accepted_index_pivot.sql"
           }
         },
         
