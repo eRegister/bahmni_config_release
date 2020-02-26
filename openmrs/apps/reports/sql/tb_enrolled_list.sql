@@ -16,13 +16,14 @@
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
+											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
 
 											 
 											  AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
-												
+												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
@@ -55,12 +56,12 @@ UNION
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
-
+												AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 3772 and os.value_coded =2095
-												
+												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
 												AND patient.voided = 0 AND o.voided = 0
 											 )
 											 
