@@ -3,14 +3,14 @@
             "name": "PITC modality testing,mode of entry OTHER (Pivot)",
             "type": "MRSGeneric",
             "config": {
-              "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/other_modality_dsd_hts_tst_pitc_hiv_status_with_history_pivot.sql"
+              "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_tst_modality_other_pivot.sql"
             }
         },
         "dsd_hts_tst_other_list": {
           "name": "PITC modality testing,mode of entry OTHER (List)",
           "type": "MRSGeneric",
           "config": {
-            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/other_modality_dsd_hts_tst_final_hiv_status_by_service_point_list.sql"
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_tst_modality_other_list.sql"
           }
         },
 
