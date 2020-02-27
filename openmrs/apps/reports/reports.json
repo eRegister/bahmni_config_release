@@ -1,13 +1,65 @@
 {
-        "txcurrcombinedlist": {
-                "name": "Current on ART Detailed (List)",
-                "type": "MRSGeneric",
-                "config": {
-                  "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
-                }
+          "dsd_hts_tst_other": {
+            "name": "PITC modality testing,mode of entry OTHER (Pivot)",
+            "type": "MRSGeneric",
+            "config": {
+              "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_tst_modality_other_pivot.sql"
+            }
         },
 
+        "dsd_hts_tst_other_list": {
+          "name": "PITC modality testing,mode of entry OTHER (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_tst_modality_other_list.sql"
+          }
+        },
+        
+        "clientsofferedindex": {
+          "name": "Clients offered index (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_index_list.sql"
+          }
+        },      
+        
+        "clientsofferedindex_pivot": {
+          "name": "Clients indexing ( Pivot )",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_offered_pivot.sql"
+          }
+        },
 
+        "dsd_hts_tst_accepted_index_list": {
+          "name": "Clients accepted indexing (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_accepted_index_list.sql"
+          }
+        },
+        "dsd_hts_tst_accepted_index_pivot": {
+          "name": "Clients accepted indexing (Pivot)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_cases_accepted_index_pivot.sql"
+          }
+        },
+        
+        "elicited_contacts": {
+          "name": "Index contacts elicited (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/index_contacts_elicited.sql"
+          }
+        },
+        "txcurrcombinedlist": {
+          "name": "Current on ART Detailed (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
+          }
+        },
         "txcurrcombinedpivot": {
                 "name": "Current on ART Detailed (Pivot)",
                 "type": "MRSGeneric",
@@ -280,16 +332,4 @@
                 }
 
         }
-
-
-
-
-
-
-
-
-
-
-
-
-}
+      }
