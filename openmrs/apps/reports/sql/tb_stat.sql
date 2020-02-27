@@ -287,7 +287,7 @@ UNION
   
 									from obs o
 										
-										--Relapsed TB Client
+										-- Relapsed TB Client
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
