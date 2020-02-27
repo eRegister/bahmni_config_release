@@ -60,7 +60,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4323
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											  AND o.person_id not in (
@@ -68,7 +68,7 @@ FROM (
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -96,24 +96,27 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										   -- New TB Patient
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											  AND patient.voided = 0 AND o.voided = 0
 											  AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											  
+											  -- Known Negative HIV Status
 											  AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4324
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+											 -- Not Transferred In
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -140,24 +143,26 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										 -- New TB Patient
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											-- New Positive HIV Status
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4664
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+											 -- Not Transferred In
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -185,24 +190,28 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										 
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
+											 -- New TB Patient
 											  AND o.concept_id =3785 and o.value_coded=1034
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											
+											-- New Negative HIV Status
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4665
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+											-- NOt transferred in
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -229,24 +238,28 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										 
+										 -- Relapsed TB Patient
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
                                              AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+										
+										--  Known Positive HIV Status	 
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4323
 												
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+										-- Not Transferred In
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -274,23 +287,28 @@ UNION
   
 									from obs o
 										
+										--Relapsed TB Client
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
 											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											 
+										-- KNown Negative HIV Status	 
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4324
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+
+										-- Not Transferred In
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -318,24 +336,27 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										-- Relapsed TB Client
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
 											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											 
+										-- New Positive HIV Status
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4664
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
+										-- Not Transferred In
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -363,24 +384,26 @@ UNION
 														   observed_age_group.sort_order AS sort_order
   
 									from obs o
-										
+										-- Relapsed TB Patient
 											 INNER JOIN patient ON o.person_id = patient.patient_id 
 											  AND o.concept_id =3785 and o.value_coded=1084
 											 AND patient.voided = 0 AND o.voided = 0
 											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											
+										-- New Negative HIV Status
 											 AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4665
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 											 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -400,6 +423,7 @@ UNION
 			
 	UNION ALL
 
+											-- NB:ALL CRITERIAS BELOW ARE THE SAME AS THE ABOVE
 			(SELECT 'Total' AS 'AgeGroup'
 					, 'All' AS 'Gender'
 						
@@ -446,7 +470,7 @@ UNION
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4323
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											  AND o.person_id not in (
@@ -454,7 +478,7 @@ UNION
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -479,23 +503,23 @@ UNION
   
 									from obs o
 										
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											  AND o.concept_id =3785 and o.value_coded=1034
-											 AND patient.voided = 0 AND o.voided = 0
+											INNER JOIN patient ON o.person_id = patient.patient_id 
+											AND o.concept_id =3785 and o.value_coded=1034
+											AND patient.voided = 0 AND o.voided = 0
 											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-											 AND o.person_id in (
+											AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4324
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -528,14 +552,14 @@ UNION
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4664
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -560,23 +584,23 @@ UNION
   
 									from obs o
 										
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											  AND o.concept_id =3785 and o.value_coded=1034
-											 AND patient.voided = 0 AND o.voided = 0
+											INNER JOIN patient ON o.person_id = patient.patient_id 
+											AND o.concept_id =3785 and o.value_coded=1034
+											AND patient.voided = 0 AND o.voided = 0
 											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-											 AND o.person_id in (
+											AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4665
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -600,23 +624,23 @@ UNION
   
 									from obs o
 										
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											  AND o.concept_id =3785 and o.value_coded=1084
-											 AND patient.voided = 0 AND o.voided = 0
-											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-											 AND o.person_id in (
+											INNER JOIN patient ON o.person_id = patient.patient_id 
+											AND o.concept_id =3785 and o.value_coded=1084
+											AND patient.voided = 0 AND o.voided = 0
+											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4323
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -640,23 +664,23 @@ UNION
   
 									from obs o
 										
-											 INNER JOIN patient ON o.person_id = patient.patient_id 
-											  AND o.concept_id =3785 and o.value_coded=1084
-											 AND patient.voided = 0 AND o.voided = 0
-											 AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-											 AND o.person_id in (
+											INNER JOIN patient ON o.person_id = patient.patient_id 
+											AND o.concept_id =3785 and o.value_coded=1084
+											AND patient.voided = 0 AND o.voided = 0
+											AND (o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											AND o.person_id in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4324
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -690,14 +714,14 @@ UNION
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4664
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -731,14 +755,14 @@ UNION
 												from obs os
 												where os.concept_id = 4666 and os.value_coded =4665
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											   AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 	3772 and os.value_coded =2095
 												AND (os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 											 INNER JOIN person_name ON person.person_id = person_name.person_id
