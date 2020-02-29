@@ -24,7 +24,7 @@ FROM
                          AND o.person_id in (
 							select distinct os.person_id
 							from obs os
-							where os.concept_id = 4266 and os.value_coded = 4265
+							where os.concept_id = 4266 and os.value_coded = 4265 os.value_numeric > 1000
 							AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 )						  				 
  						 
