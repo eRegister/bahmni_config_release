@@ -1,18 +1,17 @@
-SELECT  HTS_TOTALS_COLS_ROWS.Total_Outcome
-        ,HTS_TOTALS_COLS_ROWS.HIV_Infected
+SELECT  
+        HTS_TOTALS_COLS_ROWS.HIV_Infected
 		,HTS_TOTALS_COLS_ROWS.HIV_Uninfected
 		,HTS_TOTALS_COLS_ROWS.HIV_Final_Status_Unknown
 		,HTS_TOTALS_COLS_ROWS.Died_Without_Status_Known
 		
 
 FROM ( 
-						-- //TODO: Fix the totals
-			(SELECT     'Total' AS Total_Outcome
-						,IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0,SUM(IF(HTS_STATUS_DRVD_ROWS.Outcome = 'HIV-Infected',1,0))) As HIV_Infected
-						,IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0,SUM(IF(HTS_STATUS_DRVD_ROWS.Outcome = 'HIV-Uninfected',1,0))) As HIV_Uninfected
-						,IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0,SUM(IF(HTS_STATUS_DRVD_ROWS.Outcome = 'HIV-Final Status Unknown',1,0))) As HIV_Final_Status_Unknown 
-						,IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0,SUM(IF(HTS_STATUS_DRVD_ROWS.Outcome = 'Died Without Status Known',1,0)))  As Died_Without_Status_Known
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0,SUM(1)) as 'Total'
+						
+			(SELECT    
+						IF(Id IS NULL, 0,SUM(IF(Outcome = 'HIV-Infected',1,0))) As HIV_Infected
+						,IF(Id IS NULL, 0,SUM(IF(Outcome = 'HIV-Uninfected',1,0))) As HIV_Uninfected
+						,IF(Id IS NULL, 0,SUM(IF(Outcome = 'HIV-Final Status Unknown',1,0))) As HIV_Final_Status_Unknown 
+						,IF(Id IS NULL, 0,SUM(IF(Outcome = 'Died Without Status Known',1,0)))  As Died_Without_Status_Known
 						, HTS_STATUS_DRVD_ROWS.sort_order
 			FROM (
 
@@ -218,5 +217,5 @@ UNION
 
 			GROUP BY HTS_STATUS_DRVD_ROWS.age_group, HTS_STATUS_DRVD_ROWS.Gender
 			ORDER BY HTS_STATUS_DRVD_ROWS.sort_order)
-	) AS HTS_TOTALS_COLS_ROWS
+) AS HTS_TOTALS_COLS_ROWS
 ORDER BY HTS_TOTALS_COLS_ROWS.sort_order
