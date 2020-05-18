@@ -1,4 +1,4 @@
-SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, App_Status
+SELECT  an.identifier as "HIV program Id",Patient_MissedAppointments.patientIdentifier AS "Patient Identifier", Patient_MissedAppointments.patientName AS "Patient Name", Patient_MissedAppointments.Age, Patient_MissedAppointments.Gender,pc.value as PhoneNumber, App_Status
 
 FROM
         (
@@ -8,6 +8,7 @@ FROM
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 									   person.gender AS Gender,
 									   observed_age_group.name AS age_group,
+									   person.person_id As person_Id,
 									   'Missed' AS App_Status,
 									   observed_age_group.sort_order AS sort_order
 
@@ -249,6 +250,7 @@ FROM
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
+											   person.person_id As person_Id,
 											   'Defaulted' AS App_Status,
 											   observed_age_group.sort_order AS sort_order
 
@@ -329,6 +331,7 @@ FROM
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
+											   person.person_id As person_Id,
 											   'LTFU' AS App_Status,
 											   observed_age_group.sort_order AS sort_order
 											   
@@ -398,7 +401,17 @@ FROM
 						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
                    WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
+				   
 		) AS Patient_MissedAppointments
+		
+	  -- alias names key, pc=person contacts and an= patient identifer number	
+	  left outer join   
+		
+	  (select person_id,person_attribute_id,value from person_attribute where person_attribute_type_id=26) as pc on Patient_MissedAppointments.person_Id = pc.person_id 
+		  
+	  left outer join 
+		  
+      (select patient_id,identifier,identifier_type from patient_identifier where identifier_type=5) as an on Patient_MissedAppointments.person_Id =an.patient_id
 			
 
 ORDER BY Patient_MissedAppointments.Gender, Patient_MissedAppointments.App_Status;
