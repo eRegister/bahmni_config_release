@@ -452,38 +452,49 @@
      "config": {
        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/HTS_TST_Other_pivot.sql"
       }
-     },
-     "clientsofferedindex": {
-      "name": "Clients offered indexing (List)",
-      "type": "MRSGeneric",
-      "config": {
-        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_offered_indexing_list.sql"
-     }
-    },
- 
- "clientsofferedindex_pivot": {
-     "name": "Clients offered indexing ( Pivot )",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_offered_indexing_pivot.sql"
-     }
-    },
- 
- "hts_tst_accepted_index_list": {
-     "name": "Clients accepted indexing (List)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_accepted_indexing_list.sql"
-     }
-    },
- "hts_tst_accepted_index_pivot": {
-     "name": "Clients accepted indexing (Pivot)",
-     "type": "MRSGeneric",
-     "config": {
-            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_accepted_indexing_pivot.sql"
-     }
-    },
-
+     }, 
+  "idx_eligible_for_indexing_list": {
+    "name": "Clients Eligible for indexing (List)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_eligible_for_indexing_list.sql"
+    }
+  },
+  "idx_eligible_for_indexing_pivot": {
+    "name": "Clients Eligible for indexing  ( Pivot )",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_eligible_for_indexing_pivot.sql"
+    }
+  },
+  "idx_offered_indexing_list": {
+    "name": "Clients Offered indexing (List)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_offered_indexing_list.sql"
+    }
+  },
+  "idx_offered_indexing_pivot": {
+    "name": "Clients Offered indexing (Pivot)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_cases_offered_indexing_pivot.sql"
+    }
+  },
+  "idx_clients_elicited_list": {
+    "name": "Elicited index contacts (List)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_elicited_contacts_list.sql"
+    }
+  } 
+  ,"idx_clients_elicited_hiv_status": {
+    "name": " Elicited index contacts with HIV Status (List)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_elicited_contacts_hiv_status_list.sql"
+    }
+  },
  "tb_enrolled": {
      "name": "New and Relapse Enrolled on TB (List)",
      "type": "MRSGeneric",
