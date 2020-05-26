@@ -175,8 +175,7 @@ union
                                                                 case 
                                             when value_coded = 1738 then 'New_Positive'
                                             when value_coded = 1016 then 'New_Negative'
-                                            when value_coded = 4220 then 'New_Indeterminate' 
-                                            when value_coded is NULL then 'New_and_Not_tested_yet'
+                                            when value_coded = 4220 then 'New_Indeterminate'  
                                             else 'Not_Tested' end as Contact_HIV_Status,
                                             o.obs_group_id as status_obs_group_id 
                             from obs o
@@ -278,9 +277,8 @@ union
                                         case 
                                             when value_coded = 4783 then 'Known (+)'
                                             when value_coded = 4784 then 'Known (+) on Art'
-                                            when value_coded = 4220 then 'Kwown (-)'
-                                            when value_coded = 4321 then 'Declined' 
-                                            when value_coded is NULL then 'New_and_Not_tested_yet'
+                                            when value_coded = 4785 then 'Kwown (-)'
+                                            when value_coded = 4321 then 'Declined'  
                                             else 'Not_Tested' end as Contact_HIV_Status,
                                             o.obs_group_id as status_obs_group_id 
                             from obs o
