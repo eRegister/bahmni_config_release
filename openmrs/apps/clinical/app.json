@@ -66,6 +66,8 @@
         	]
 	},
         "obsIgnoreList": [
+            "REGISTRATION FEES",
+            "COMMENTS",
             "Patient file"
         ],
         "otherInvestigationsMap": {
@@ -85,6 +87,86 @@
                 "durationRequired": false,
                 "allowAddMore": true
             },
+	    "ANC, History of Past Pregnancies": {
+                "autocomplete":true,
+                "codedConceptName":"ANC, Place of Birth",
+		"codedConceptName":"Mode of Delivery",
+                "allowAddMore": true
+            },
+	    "ANC, Family History": {
+                "multiSelect": true
+            },
+		"ANC, High Risk Pregnancy": {
+                "multiSelect": true
+			},
+                "ANC, Drug History": {
+                "multiSelect": true
+            },
+		"Addiction": {
+                "multiSelect": true
+            },
+		"ANC, Family Planning Method": {
+                "multiSelect": true
+            },
+		"ANC, Medical History": {
+                "multiSelect": true
+            },
+		"ANC, High Risk Pregnancy": {
+                "multiSelect": true
+            },
+		"ANC, Complications during pregnancy": {
+                "multiSelect": true
+            },
+
+        "Other underlying health conditions": {
+                "multiSelect": true
+            },
+            "Program, Facility of Enrollment" : {
+                "dropdown": true,
+               "autocomplete":true
+            },
+	    "Cervical Cancer Screening" : {
+                "required": true
+            },
+            "PNC, HIV Status Known Before Visit" : {
+                "required": true
+            },
+            "Tested in PNC" : {
+                "required": true
+            },
+            "PNC, Micro-Nutrient supplement" : {
+                "required": true
+            },
+			"Breast Condition": {
+                "multiSelect": true
+            },
+            "Delivery Note, Delivery location" : {
+                "required": false
+            },
+	    "Mode of Delivery" : {
+                "required": true
+            },
+	    "Cervical Cancer Assessment Method" : {
+                "required": true
+            },
+	    "PNC, Initiated on Family Planning" : {
+                "required": true
+            },
+            "HEI, HIV Status at 24 Months" : {
+                "dropdown": true
+            },
+	    "Family Planing Counselling" : {
+                "required": true
+            },
+	    "FP, Family Planning Method" : {
+                "required": true
+            },
+	    "VIA" : {
+                "required": true
+            },
+	    "Pap Smear" : {
+                "required": true
+            },
             "Tuberculosis, Adverse Effects" :{
                 "multiSelect" : true,
                 "autocomplete" : true
@@ -97,12 +179,17 @@
             },
 
 	    "HIVTC, ART Regimen" : {
-			"dropdown": true
+		"required": true,
+		"dropdown": true
 	    },
 
 	    "ART, Follow-up date" : {
                 "allowFutureDates": true,
 		"required": true
+            },
+            "ANC, Estimated Date of Delivery" : {
+                "allowFutureDates": true,
+                "required": true
             },
             "EIM, Follow up date" : {
                 "allowFutureDates": true
@@ -116,10 +203,20 @@
                 "multiSelect" : true
             },
 
+	    "Other TB Management" : {
+		"multiSelect" : true
+	    },
+
             "TB Treatment, TB Regimen":{
                 "multiSelect" : true
             },
-	    
+            "Other TB Management":{
+                "multiSelect" : true
+            },
+
+            "TB, HIV Management":{
+                "multiSelect" : true
+            },
 	    "ARV drugs No. of days dispensed" : {
                 "required": false
             },
@@ -148,7 +245,7 @@
                 "required" : true
             },
 
-            "ANC, Estimated Date of Delivery" : {
+            "Pregnancy Estimated Date of Delivery" : {
                 "allowFutureDates": true
             },
             "Posture": {
@@ -175,11 +272,11 @@
             },
             "HIVTC, Regimen when transferred out": {
                 "required" : true
-            },      
+            },
             "HIVTC, Date of transferred out": {
                  "required" : true
             },
-            
+
             "ART treatment interruption Date": {
                  "required" : true
             },
@@ -194,7 +291,10 @@
             },
             "HIVTC, Reason for treatment substitution":{
                  "required" : false
-            },           
+            },
+            "HIVTC, Pregnancy Estimated Date of Delivery":{
+             "allowFutureDates": true
+            },
             "ART treatment interruption stopped reason":{
                  "required" : false
             },
@@ -243,12 +343,9 @@
             "Set2": {
                 "allowAddMore": true
             },
-			"HIVTC, History of TB": {
-				"allowAddMore": true
-			},
-            "ANC, History of Past Pregnancies": {
-                "allowAddMore": true
-            },
+	    "HIVTC, History of TB": {
+		"allowAddMore": true
+	    },
             "Coded3": {
                 "multiSelect": true
             },
@@ -307,6 +404,9 @@
 	    "HTC, Condom Type Dispensed": {
 		"required": true
 	    },
+        "HTC, Condom Type Dispensed": {
+                "multiSelect": true
+            },
 	    "HTC, Final Result Given": {
 		"required": true
 	    },
@@ -319,10 +419,33 @@
 	    },
 	    "HTC, Final HIV status": {
 		"required": true
-	    },
-            "HTSIDX, Index Contact Information": {
-               "allowAddMore" :true
-            },
+        },
+        "Testing Eligibility, Tested For HIV": {
+            "required": true
+        },
+        "Testing Eligibility, Last Test Results": {
+            "required": true
+        },
+
+        "Testing Eligibility, On ART Treatment" : {
+            "required": true
+        },
+      
+        "Testing Eligibility, Counselled & linked to Treatment" : {
+            "required": true
+        },
+        "Testing Eligibility, Time Last Test Done" : {
+            "required": true
+        },
+        "Testing Eligibility, Reinforced Prevention Counselling" : {
+            "required": true
+        },
+        "Test For HIV" : {
+            "required": true
+        },
+        
+
+
             "defaults": {
                 "Number of living children": 1,
                 "Accepted Family Planning methods": [
