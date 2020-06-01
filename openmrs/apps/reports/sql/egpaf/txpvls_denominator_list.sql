@@ -103,7 +103,7 @@ FROM (
 										)										
 										-- ROUTINE VL MONITORING TYPE
 										and os.value_coded = 4281
-								)
+								)			
 								AND o.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								INNER JOIN person_name ON person.person_id = person_name.person_id

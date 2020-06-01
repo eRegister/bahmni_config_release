@@ -1,9 +1,0 @@
-{
-        "id": "bahmni.reports",
-        "description": "Bahmni Reports App",
-        "extensionPoints": [],
-        "config": {
-            "paperSize": "A4",
-            "enableReportQueue": true
-        }
-}
