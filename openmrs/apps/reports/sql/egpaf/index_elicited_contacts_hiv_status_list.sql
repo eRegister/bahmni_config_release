@@ -12,18 +12,23 @@ from
                             SELECT given_name, family_name, concept_id, firstname, surname,age_set.contact_age, obs_group_id from
                             (
                                 SELECT first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
-                                (   
+                                (    
                                     -- Contact Firstname and Surname
                                     select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                        inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                        inner join person_name pn on o.person_id=pn.person_id 
+                                        and o.voided=0
+								        and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)								 
+
                                         where concept_id in (4761)
                                     group by obs_group_id) as first_name_set 
 
                                 inner join 
                                 (
                                     select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id and o.voided=0
-
+                                    inner join person_name pn on o.person_id=pn.person_id 
+                                    and o.voided=0
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 
                                     where concept_id in (4762) 
                                     group by obs_group_id
                                 ) as surname_set 
@@ -38,7 +43,10 @@ from
                                     inner join person_name pn on o.person_id=pn.person_id and o.voided=0
                                     and o.obs_group_id in (
                                                 select oss.obs_group_id
-                                                from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4769 and oss.voided=0 
+                                                from obs oss inner join person p on oss.person_id=p.person_id 
+                                                and oss.concept_id = 4769 
+                                                and oss.voided=0
+								                and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)								                                                 
                                     )
                                         
                                     where concept_id = 4769
@@ -56,9 +64,15 @@ from
                                         inner join person_name pn on o.person_id=pn.person_id 
                                         and o.voided=0
                                         and o.value_coded in (1088,1087)
+								        and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
+
                                         and o.obs_group_id in (
                                                     select oss.obs_group_id
-                                                    from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4770 and oss.voided=0 
+                                                    from obs oss inner join person p on oss.person_id=p.person_id
+                                                    and oss.concept_id = 4770 
+                                                    and oss.voided=0
+								                    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								  
                                         )                    
                                         and o.concept_id in(4770) 
                                         group by obs_group_id 
@@ -83,12 +97,16 @@ from
                                     inner join person_name pn on o.person_id=pn.person_id 
                                     and o.voided=0
                                     and o.value_coded in (1738,1016,1975,1739) 
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 
                                     and o.obs_group_id in (
                                             select oss.obs_group_id
                                             from obs oss inner join person p on oss.person_id=p.person_id 
                                             and oss.voided=0 
                                             and oss.value_coded in (2146) 
                                             and oss.concept_id = 4773
+								            and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 
                                 )                    
                                 and o.concept_id in(4774) 
                                 group by obs_group_id 
@@ -116,14 +134,19 @@ union
                             SELECT first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
                                 select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                    inner join person_name pn on o.person_id=pn.person_id 
+                                    and o.voided=0
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 
                                     where concept_id in (4761)
                                 group by obs_group_id) as first_name_set 
 
                             inner join 
                             (
                                 select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                inner join person_name pn on o.person_id=pn.person_id
+                                and o.voided=0
+								and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
 
                                 where concept_id in (4762) 
                                 group by obs_group_id
@@ -136,10 +159,16 @@ union
                                 -- Contact age
                                 select obs_id, o.person_id, value_numeric as contact_age, o.obs_group_id as age_obs_group_id, o.voided  
                                 from obs o
-                                inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                inner join person_name pn on o.person_id=pn.person_id 
+                                and o.voided=0
+							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                 and o.obs_group_id in (
                                             select oss.obs_group_id
-                                            from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4769 and oss.voided=0 
+                                            from obs oss inner join person p on oss.person_id=p.person_id 
+                                            and oss.concept_id = 4769 
+                                            and oss.voided=0
+        								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                                 )
                                     
                                 where concept_id = 4769
@@ -157,9 +186,14 @@ union
                                     inner join person_name pn on o.person_id=pn.person_id 
                                     and o.voided=0
                                     and o.value_coded in (1088,1087)
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                     and o.obs_group_id in (
                                                 select oss.obs_group_id
-                                                from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4770 and oss.voided=0 
+                                                from obs oss inner join person p on oss.person_id=p.person_id 
+                                                and oss.concept_id = 4770 
+                                                and oss.voided=0
+            								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                                     )                    
                                     and o.concept_id in(4770) 
                                     group by obs_group_id 
@@ -181,13 +215,16 @@ union
                             from obs o
                                 inner join person_name pn on o.person_id=pn.person_id 
                                 and o.voided=0
-                                and o.value_coded in (1738,1016,4220) 
+                                and o.value_coded in (1738,1016,4220)
+							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                 and o.obs_group_id in (
                                         select oss.obs_group_id
                                         from obs oss inner join person p on oss.person_id=p.person_id 
                                         and oss.voided=0 
                                         and oss.value_coded in (1738,1016,4220) 
                                         and oss.concept_id = 4778 
+    								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
                             )                    
                             and o.concept_id in(4778) 
                             group by obs_group_id 
@@ -216,14 +253,19 @@ union
                             SELECT first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
                                 select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                    inner join person_name pn on o.person_id=pn.person_id 
+                                    and o.voided=0
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                     where concept_id in (4761)
                                 group by obs_group_id) as first_name_set 
 
                             inner join 
                             (
                                 select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                inner join person_name pn on o.person_id=pn.person_id 
+                                and o.voided=0
+							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
                                 where concept_id in (4762) 
                                 group by obs_group_id
@@ -236,10 +278,17 @@ union
                                 -- Contact Age
                                 select obs_id, o.person_id, value_numeric as contact_age, o.obs_group_id as age_obs_group_id, o.voided  
                                 from obs o
-                                inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                inner join person_name pn on o.person_id=pn.person_id 
+                                and o.voided=0
+								and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                
                                 and o.obs_group_id in (
                                             select oss.obs_group_id
-                                            from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4769 and oss.voided=0 
+                                            from obs oss 
+                                            inner join person p on oss.person_id=p.person_id 
+                                            and oss.concept_id = 4769 
+                                            and oss.voided=0
+        								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                                 )
                                     
                                 where concept_id = 4769
@@ -256,12 +305,15 @@ union
                                     inner join person_name pn on o.person_id=pn.person_id 
                                     and o.voided=0
                                     and o.value_coded in (1088,1087)
+								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                     and o.obs_group_id in (
                                         select oss.obs_group_id
                                         from obs oss inner join person p on oss.person_id=p.person_id 
                                         and oss.voided=0 
                                         and oss.value_coded in (2147) 
                                         and oss.concept_id = 4787
+    								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
                                     )                    
                                     and o.concept_id in(4770) 
                                     group by obs_group_id 
@@ -285,12 +337,15 @@ union
                                 inner join person_name pn on o.person_id=pn.person_id 
                                 and o.voided=0
                                 and o.value_coded in (4783,4784,4785,4321) 
+							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+
                                 and o.obs_group_id in (
                                         select oss.obs_group_id
                                         from obs oss inner join person p on oss.person_id=p.person_id 
                                         and oss.voided=0 
                                         and oss.value_coded in (2147) 
                                         and oss.concept_id = 4787
+								        and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
                                )                    
                             and o.concept_id in(4782) 
                             group by obs_group_id 

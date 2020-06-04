@@ -73,10 +73,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
         	if(followUpDate) {
                 	var daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
 
-                	// if(daysDispensed <= 0) {
-                        	// conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
-                        	// conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
-                	// } else {
+                	 
                         	var drugSupplyPeriod = "";
 
                         	if(daysDispensed >= 11 && daysDispensed < 21) {
@@ -99,7 +96,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         	}
                         	conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
                         	conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod });
-                	// }
+                	 
         	}
         	return conditions;
 	}
@@ -117,33 +114,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
         }
         return conditions;
     },
-
-
-/*-----
-   'HIVTC, Treatment substituted date' : function (formName, formFieldValues) {
-        var conditionConcept = formFieldValues['HIVTC, Treatment substituted date'];
-        var conditions = {enable: [], disable: [], show: [], hide: []};
-
-        if (conditionConcept){
-            conditions.enable.push("HIVTC, Adult 1st Line Regimen")
-            conditions.enable.push("HIVTC, Adult 2nd Line Regimen")
-            conditions.enable.push("HIVTC, Children 1st Line Regimen")
-            conditions.enable.push("HIVTC, Children 2nd Line Regimen")
-            conditions.enable.push("HIVTC, Adult 3rd Line Regimen")
-            conditions.enable.push("HIVTC, Children 3rd Line Regimen")
-            conditions.enable.push("HIVTC, Reason for treatment substitution");
-        }else {
-            conditions.disable.push("HIVTC, Reason for treatment substitution")
-            conditions.disable.push("HIVTC, Adult 1st Line Regimen")
-            conditions.disable.push("HIVTC, Adult 2nd Line Regimen")
-            conditions.disable.push("HIVTC, Adult 3rd Line Regimen")
-            conditions.disable.push("HIVTC, Children 1st Line Regimen")
-            conditions.disable.push("HIVTC, Children 2nd Line Regimen")
-            conditions.disable.push("HIVTC, Children 3rd Line Regimen");
-        } 
-        return conditions;
-    },
------*/
 
     'HIVTC, Treatment switched date' : function (formName, formFieldValues) {
         var conditionConcept = formFieldValues['HIVTC, Treatment switched date'];
@@ -847,8 +817,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("ANC, Adherence level to MBP");
                         } else {
                                 conditions.show.push("ANC, Adherence level to MBP");
-								// conditions.show.push("ANC, Pack for HIV-")
-                                // conditions.show.push("ANC, Pack for women on ART");
                         }
                 }
                 return conditions;
@@ -933,25 +901,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         }
                 }
                 return conditions;
-        },
-        /*-----
-                'HTC, Partner Testing and Counseling' : function (formName, formFieldValues) {
-                 var coupleTest = formFieldValues['HTC, Partner Testing and Counseling'];
-        
-                if(formName == "LOR, PMTCT") {
-                        var conditions = {show: [], hide: [], enable: [], disable: []};
-        
-                        if(coupleTest == "Yes") {
-                                conditions.show.push("Partner HIV Status");
-                        }
-                        else {
-                                conditions.hide.push("Partner HIV Status");
-        
-                        }
-                        return conditions;
-                              },
-        -----*/
-
+        }, 
         'PNC, Initiated on Family Planning': function (formName, formFieldValues) {
                 var InitiatedFP = formFieldValues['PNC, Initiated on Family Planning'];
 
@@ -1146,5 +1096,126 @@ Bahmni.ConceptSet.FormConditions.rules = {
         conditions.enable.push("HIVTC, Children 3rd Line Regimen");
     }       
     return conditions;
+},
+
+/*
+       ------------------------------------------------------
+                        Contact index tracing formConditions
+       -------------------------------------------------------
+ */
+
+'HTSIDX, Index accepted Index Testing Service' : function (formName, formFieldValues) {
+    var acceptedIndexing = formFieldValues['HTSIDX, Index accepted Index Testing Service']; 
+    
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (acceptedIndexing == "Yes"){
+        conditions.show.push("HTSIDX, Index UIC");
+        conditions.show.push("HTSIDX, Index Contact Information"); 
+        
+        // Show prior tests conditikons
+        conditions.hide.push("HTSIDX, Prior Test Result"); 
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+        conditions.hide.push("HTSIDX,Referral to Prevention");
+
+    }else {  
+        conditions.hide.push("HTSIDX, Index UIC");
+        conditions.hide.push("HTSIDX, Index Contact Information");          
+    }       
+    return conditions;
+},
+
+'HTSIDX, Prior Tested Before Status' : function (formName, formFieldValues) {
+    var pirorTest = formFieldValues['HTSIDX, Prior Tested Before Status']; 
+     
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (pirorTest == "Yes"){ 
+        var positive_priorTest = formFieldValues['HTSIDX, Prior Test Result'];
+        // Show prior tests conditikons
+        conditions.show.push("HTSIDX, Prior Test Result");
+        conditions.show.push("HTSIDX, Duration since last test");
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+        conditions.show.push("HTSIDX,Referral to Prevention"); 
+        
+    }else if (pirorTest == "No"){   
+        
+        //Hide prior tests conditikons if the 
+        conditions.hide.push("HTSIDX, Prior Test Result");
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+        // Show conditions if the contact has no prior tests and the client knows their status
+        conditions.show.push("HTSIDX,Tested");
+        conditions.show.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.show.push("HTSIDX,Partner/ Child Test Result");
+        conditions.show.push("HTSIDX,Linked to care and treatment");
+        conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
+        conditions.show.push("HTSIDX,Referral to Prevention"); 
+    }  else{   
+        
+        // Show prior tests conditikons
+        conditions.hide.push("HTSIDX, Prior Test Result");
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");     
+        conditions.hide.push("HTSIDX,Referral to Prevention");
+    }            
+    return conditions;
+},
+
+'HTSIDX,Tested' : function (formName, formFieldValues) {
+    var tested = formFieldValues['HTSIDX,Tested'];       
+     
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (tested == "Yes"){   
+        conditions.show.push("HTSIDX,Partner/ Child Test Result");
+        conditions.show.push("HTSIDX,Linked to care and treatment");
+        conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
+
+        conditions.hide.push("HTSIDX, IF No, why");
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.show.push("HTSIDX,Referral to Prevention");
+
+    } else if(tested == "No"){
+         
+        conditions.show.push("HTSIDX, IF No, why");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+
+        conditions.show.push("HTSIDX,Referral to Prevention");
+    } else {            
+
+        // Did the client test during their visit to the facility
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+    }          
+    return conditions;
 }
+
 };
