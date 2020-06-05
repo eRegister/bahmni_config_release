@@ -23,7 +23,7 @@ from
                                     group by obs_group_id) as first_name_set 
 
                                 inner join 
-                                (
+                                ( 
                                     select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
                                     inner join person_name pn on o.person_id=pn.person_id 
                                     and o.voided=0

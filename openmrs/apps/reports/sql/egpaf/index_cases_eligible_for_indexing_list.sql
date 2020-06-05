@@ -24,7 +24,8 @@ FROM
 										and os.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 										and os.obs_datetime in (
 												select max(oss.obs_datetime)
-												from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 2254 and oss.voided=0
+												from obs oss inner join person p on oss.person_id=p.person_id 
+												and oss.concept_id = 2254 and oss.voided=0
 												and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 												group by p.person_id
 										)

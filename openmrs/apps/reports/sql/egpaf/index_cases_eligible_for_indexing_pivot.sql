@@ -22,7 +22,7 @@ FROM (
 						, IF(INDEX_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(INDEX_STATUS_DRVD_ROWS.Patient_Health_Status = 'Referred' AND INDEX_STATUS_DRVD_ROWS.gender = 'F', 1, 0))) AS Reffered_Females					
 						, IF(INDEX_STATUS_DRVD_ROWS.Id IS NULL, 0,  SUM(1)) as 'Total' 
 						, INDEX_STATUS_DRVD_ROWS.sort_order
-			FROM (  
+			FROM (   
 				
 
 -- CLIENTS WITH DETECTABLE VL

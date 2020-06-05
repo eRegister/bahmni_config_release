@@ -48,7 +48,7 @@ FROM
 												and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 												group by p.person_id
 										)
-										and os.value_numeric > 20
+								 		and os.value_numeric > 20
 								)
 								AND person_id in (
 										select os.person_id
