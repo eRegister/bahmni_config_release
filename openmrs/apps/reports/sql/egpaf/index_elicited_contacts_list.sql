@@ -10,7 +10,7 @@ SELECT Id,concat(given_name ,' ',family_name) as Client_Name, concat(firstname,'
             select obs_id, o.person_id as Id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
                 inner join person_name pn ON o.person_id=pn.person_id 
                 AND o.voided=0
-                AND o.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE)
+                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								                
                 where concept_id in (4761)
             group by obs_group_id) as first_name_set 
@@ -20,7 +20,7 @@ SELECT Id,concat(given_name ,' ',family_name) as Client_Name, concat(firstname,'
             select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
             inner join person_name pn ON o.person_id=pn.person_id 
             AND o.voided=0
-            AND o.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE)								 
+            AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)								 
 
             where concept_id in (4762) 
             group by obs_group_id
@@ -34,14 +34,14 @@ SELECT Id,concat(given_name ,' ',family_name) as Client_Name, concat(firstname,'
         from obs o
         inner join person_name pn ON o.person_id=pn.person_id
         AND o.voided=0
-        AND o.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE) 
+        AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
      
         AND o.obs_group_id in (
                     select oss.obs_group_id
                     from obs oss inner join person p ON oss.person_id=p.person_id 
                     AND oss.concept_id = 4769 
                     AND oss.voided=0
-                    AND oss.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE) 
+                    AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
         )
             
         where concept_id = 4769
@@ -59,14 +59,14 @@ inner join
     inner join person_name pn ON o.person_id=pn.person_id 
     AND o.voided=0
     AND o.value_coded in (1088,1087)
-    AND o.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE)
+    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
     
     AND o.obs_group_id in (
                 select oss.obs_group_id
                 from obs oss inner join person p ON oss.person_id=p.person_id 
                 AND oss.concept_id = 4769 
                 AND oss.voided=0 
-                AND oss.obs_datetime BETWEEN CAST('20200301' AS DATE) AND CAST('20200331' AS DATE)
+                AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
     )
 
     group by obs_group_id 
