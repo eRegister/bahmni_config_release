@@ -10,7 +10,7 @@ FROM
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
-											   o.value_numeric AS vl_result,
+											   concat(o.value_numeric,'',' m/l') AS vl_result,
 											   observed_age_group.sort_order AS sort_order
 
 						from obs o
@@ -65,7 +65,7 @@ FROM
 											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
-											   o.value_numeric AS vl_result,
+											   concat(o.value_numeric,'',' m/l') AS vl_result,
 											   observed_age_group.sort_order AS sort_order
 
 						from obs o
