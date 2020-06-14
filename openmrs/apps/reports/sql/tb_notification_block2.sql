@@ -10,7 +10,9 @@ select patient_type,
 	IF(id is null, 0,SUM(IF(outcome = '45 - 49 yrs',1,0))) AS "45-49yrs",
     IF(id is null, 0,SUM(IF(outcome = '50 - 54 yrs',1,0))) AS "50-54yrs",
 	IF(id is null, 0,SUM(IF(outcome = '55 - 64 yrs',1,0))) AS "55-64yrs",
-	IF(id is null, 0,SUM(IF(outcome = '65+ yrs',1,0))) AS "65+yrs"
+	IF(id is null, 0,SUM(IF(outcome = '65+ yrs',1,0))) AS "65+yrs",
+  	IF(id is null, 0,SUM(1)) AS "Total"
+
 
 
 
