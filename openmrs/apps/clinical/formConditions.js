@@ -732,43 +732,43 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 var conditionConcept = formFieldValues['HIVTC, Action to Record Viral Load Results'];
                 var patientAge = patient['age'];
                 var patientGender = patient['gender'];
-
                 var conditions = { show: [], hide: [], enable: [], disable: [] };
-
-
-
-                if (conditionConcept == 'Viral Load Result') {
+                if (conditionConcept.includes('Viral Load Result') && !conditionConcept.includes('HIVTC, Draw Blood for VL Test')) {
                         // Visible fields
                         conditions.show.push("HIVTC, Viral Load Result");
                         conditions.show.push("HIVTC, Viral Load Data");
                         conditions.show.push("HIVTC, Viral load blood results return date");
                         conditions.show.push("HIVTC, Date VL Result given to patient");
-
                         // Hidden fields
                         conditions.hide.push("HIVTC, Viral Load Blood drawn date");
                         conditions.hide.push("HIVTC, VL Pregnancy Status");
                         conditions.hide.push("HIVTC, VL Breastfeeding Status");
                         conditions.hide.push("HIVTC, Viral Load Monitoring Type");
-
-                } else if (conditionConcept == 'HIVTC, Draw Blood for VL Test') {
+                } else if (conditionConcept.includes('HIVTC, Draw Blood for VL Test') && !conditionConcept.includes('Viral Load Result')) {
                         conditions.show.push("HIVTC, Viral Load Blood drawn date");
                         conditions.show.push("HIVTC, VL Pregnancy Status");
                         conditions.show.push("HIVTC, VL Breastfeeding Status");
                         conditions.show.push("HIVTC, Viral Load Monitoring Type");
-
                         // Hidden fields
                         conditions.hide.push("HIVTC, Viral Load Result");
                         conditions.hide.push("HIVTC, Viral Load Data");
                         conditions.hide.push("HIVTC, Viral load blood results return date");
                         conditions.hide.push("HIVTC, Date VL Result given to patient");
-
-
                         // Hide Pregnancy and Breastfeeding fields for Males and Young children
                         if (patientAge < 12 || patientAge > 49 || patientGender == "M") {
                                 conditions.hide.push("HIVTC, VL Pregnancy Status");
                                 conditions.hide.push("HIVTC, VL Breastfeeding Status");
                         }
-
+                } else if (conditionConcept.includes('HIVTC, Draw Blood for VL Test') && conditionConcept.includes('Viral Load Result')) {
+                        // Visible fields
+                        conditions.show.push("HIVTC, Viral Load Result");
+                        conditions.show.push("HIVTC, Viral Load Data");
+                        conditions.show.push("HIVTC, Viral load blood results return date");
+                        conditions.show.push("HIVTC, Date VL Result given to patient");
+                        conditions.show.push("HIVTC, Viral Load Blood drawn date");
+                        conditions.show.push("HIVTC, VL Pregnancy Status");
+                        conditions.show.push("HIVTC, VL Breastfeeding Status");
+                        conditions.show.push("HIVTC, Viral Load Monitoring Type");
                 } else {
                         // Hide everything except Record Viral Load Results field
                         conditions.hide.push("HIVTC, Viral Load Data");
@@ -779,12 +779,11 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.hide.push("HIVTC, VL Breastfeeding Status");
                         conditions.hide.push("HIVTC, Viral Load Monitoring Type");
                         conditions.hide.push("HIVTC, Viral Load Result");
-
                 }
                 return conditions;
+
         },
-
-
+        
         'HTC, Pregnancy Status': function (formName, formFieldValues, patient) {
                 if ((formName == "HIV Treatment and Care Progress Template") || (formName == "HIVTC, Patient Register")) {
                         var conditionConcept = formFieldValues['HTC, Pregnancy Status'];
@@ -1620,4 +1619,124 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
 
         },
+/*
+       ------------------------------------------------------
+                        Contact index tracing formConditions
+       -------------------------------------------------------
+ */
+
+'HTSIDX, Index accepted Index Testing Service' : function (formName, formFieldValues) {
+    var acceptedIndexing = formFieldValues['HTSIDX, Index accepted Index Testing Service']; 
+    
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (acceptedIndexing == "Yes"){
+        conditions.show.push("HTSIDX, Index UIC");
+        conditions.show.push("HTSIDX, Index Contact Information"); 
+        
+        // Show prior tests conditikons
+        conditions.hide.push("HTSIDX, Prior Test Result"); 
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+        conditions.hide.push("HTSIDX,Referral to Prevention");
+
+    }else {  
+        conditions.hide.push("HTSIDX, Index UIC");
+        conditions.hide.push("HTSIDX, Index Contact Information");          
+    }       
+    return conditions;
+},
+
+'HTSIDX, Prior Tested Before Status' : function (formName, formFieldValues) {
+    var pirorTest = formFieldValues['HTSIDX, Prior Tested Before Status']; 
+     
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (pirorTest == "Yes"){ 
+        var positive_priorTest = formFieldValues['HTSIDX, Prior Test Result'];
+        // Show prior tests conditikons
+        conditions.show.push("HTSIDX, Prior Test Result");
+        conditions.show.push("HTSIDX, Duration since last test");
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+        conditions.show.push("HTSIDX,Referral to Prevention"); 
+        
+    }else if (pirorTest == "No"){   
+        
+        //Hide prior tests conditikons if the 
+        conditions.hide.push("HTSIDX, Prior Test Result");
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+        // Show conditions if the contact has no prior tests and the client knows their status
+        conditions.show.push("HTSIDX,Tested");
+        conditions.show.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.show.push("HTSIDX,Partner/ Child Test Result");
+        conditions.show.push("HTSIDX,Linked to care and treatment");
+        conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
+        conditions.show.push("HTSIDX,Referral to Prevention"); 
+    }  else{   
+        
+        // Show prior tests conditikons
+        conditions.hide.push("HTSIDX, Prior Test Result");
+        conditions.hide.push("HTSIDX, Duration since last test");
+
+        // Hide conditions if the contact has prior tests and the client knows their status
+        conditions.hide.push("HTSIDX,Tested");
+        conditions.hide.push("HTSIDX, IF No, why"); 
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");     
+        conditions.hide.push("HTSIDX,Referral to Prevention");
+    }            
+    return conditions;
+},
+
+'HTSIDX,Tested' : function (formName, formFieldValues) {
+    var tested = formFieldValues['HTSIDX,Tested'];       
+     
+    var conditions = {show: [], hide: [], enable: [], disable: []};
+
+    if (tested == "Yes"){   
+        conditions.show.push("HTSIDX,Partner/ Child Test Result");
+        conditions.show.push("HTSIDX,Linked to care and treatment");
+        conditions.show.push("HTSIDX,Partner/Child's PRE/ART Number");
+
+        conditions.hide.push("HTSIDX, IF No, why");
+        conditions.hide.push("HTSIDX,Date partner/child tested");
+        conditions.show.push("HTSIDX,Referral to Prevention");
+
+    } else if(tested == "No"){
+         
+        conditions.show.push("HTSIDX, IF No, why");
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number");
+
+        conditions.show.push("HTSIDX,Referral to Prevention");
+    } else {            
+
+        // Did the client test during their visit to the facility
+        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
+        conditions.hide.push("HTSIDX,Linked to care and treatment");
+        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
+    }          
+    return conditions;
+}
+
 };
