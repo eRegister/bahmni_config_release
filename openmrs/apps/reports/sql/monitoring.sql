@@ -1,15 +1,16 @@
-select distinct Patient_Identifier,Patient_Name, Age, Gender, age_group,Program_Status,
+select distinct Patient_Identifier,Patient_Name, Age,DOB, Gender, age_group,Program_Status,
 regimen_name,encounter_date,follow_up,drug_duration,intake_regimen,ART_Start
 from obs o
 left outer join
 
 (
-	(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Initiated' AS 'Program_Status'
+	(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age,DOB, Gender, age_group, 'Initiated' AS 'Program_Status'
 	FROM
                 (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+									   person.birthdate DOB,
 									   person.gender AS Gender,
 									   observed_age_group.name AS age_group
 									  
@@ -45,13 +46,14 @@ ORDER BY Newly_Initiated_ART_Clients.Age)
 
 UNION
 
-(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Seen' AS 'Program_Status'
+(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age,DOB, Gender, age_group, 'Seen' AS 'Program_Status'
 FROM (
 
 select distinct patient.patient_id AS Id,
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 								  
@@ -97,12 +99,13 @@ ORDER BY Clients_Seen.Age)
 
 UNION
 
-(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Seen_Prev_Months' AS 'Program_Status'
+(SELECT Id,patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age,DOB, Gender, age_group, 'Seen_Prev_Months' AS 'Program_Status'
 FROM (
 (select distinct patient.patient_id AS Id,
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -125,6 +128,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -149,6 +153,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -173,6 +178,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -199,6 +205,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -224,6 +231,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -255,6 +263,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -286,6 +295,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -317,6 +327,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -350,6 +361,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -382,6 +394,7 @@ UNION
                                    patient_identifier.identifier AS patientIdentifier,
                                    concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
                                    floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
+								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
 
@@ -440,61 +453,70 @@ left outer join
 select a.person_id, 
 case 
 when a.value_coded = 2201 then '1c'
-when a.value_coded = 2202 then '4c'
 when a.value_coded = 2203 then '1d'
-when a.value_coded = 2204 then '4d'
 when a.value_coded = 2205 then '1e'
 when a.value_coded = 2207 then '1f'
-when a.value_coded = 2209 then '2d'
-when a.value_coded = 2210 then '2c'
 when a.value_coded = 3672 then '1g'
 when a.value_coded = 3673 then '1h'
+when a.value_coded = 4678 THEN '1j'
+when a.value_coded = 4679 THEN '1k'
+when a.value_coded = 4680 THEN '1m'
+when a.value_coded = 4681 THEN '1n'
+when a.value_coded = 4682 THEN '1p'
+when a.value_coded = 4683 THEN '1q'
+when a.value_coded = 2210 then '2c'
+when a.value_coded = 2209 then '2d'
+when a.value_coded = 3674 then '2e'
+when a.value_coded = 3675 then '2f'
 when a.value_coded = 3676 then '2g'
+when a.value_coded = 3677 then '2h'
 when a.value_coded = 3678 then '2i'
+when a.value_coded = 4689 THEN '2j'
+when a.value_coded = 4690 THEN '2k'
+when a.value_coded = 4691 THEN '2l'
+when a.value_coded = 4692 THEN '2m'
+when a.value_coded = 4693 THEN '2n'
+when a.value_coded = 4694 THEN '2o'
+when a.value_coded = 4695 THEN '2p'
+when a.value_coded = 3683 THEN '3a'
+when a.value_coded = 3684 THEN '3b'
+when a.value_coded = 3685 THEN '3c'
+when a.value_coded = 4706 THEN '3d'
+when a.value_coded = 4707 THEN '3e'
+when a.value_coded = 4708 THEN '3f'
+when a.value_coded = 4709 THEN '3g'
+when a.value_coded = 4710 THEN '3h'
+when a.value_coded = 2202 then '4c'
+when a.value_coded = 2204 then '4d'
 when a.value_coded = 3679 then '4e'
 when a.value_coded = 3680 then '4f'
+when a.value_coded = 4684 THEN '4g'
+when a.value_coded = 4685 THEN '4h'
+when a.value_coded = 4686 THEN '4i'
+when a.value_coded = 4687 THEN '4j'
+when a.value_coded = 4688 THEN '4k'
 when a.value_coded = 3681 then '5a'
 when a.value_coded = 3682 then '5b'
 when a.value_coded = 2143 then 'Other'
-when a.value_coded = 4678 THEN "1j"
-when a.value_coded = 4679 THEN "1k"
-when a.value_coded = 4680 THEN "1m"
-when a.value_coded = 4681 THEN "1n"
-when a.value_coded = 4682 THEN "1p"
-when a.value_coded = 4683 THEN "1q"
-when a.value_coded = 4684 THEN "4g"
-when a.value_coded = 4685 THEN "4h"
-when a.value_coded = 4686 THEN "4i"
-when a.value_coded = 4687 THEN "4j"
-when a.value_coded = 4688 THEN "4k"
-when a.value_coded = 4689 THEN "2j"
-when a.value_coded = 4690 THEN "2k"
-when a.value_coded = 4691 THEN "2l"
-when a.value_coded = 4692 THEN "2m"
-when a.value_coded = 4693 THEN "2n"
-when a.value_coded = 4694 THEN "2o"
-when a.value_coded = 4695 THEN "2p"
-when a.value_coded = 4696 THEN "5c"
-when a.value_coded = 4697 THEN "5d"
-when a.value_coded = 4698 THEN "5e"
-when a.value_coded = 4699 THEN "5f"
-when a.value_coded = 4700 THEN "5g"
-when a.value_coded = 4701 THEN "5h"
-when a.value_coded = 4702 THEN "6c"
-when a.value_coded = 4703 THEN "6d"
-when a.value_coded = 4704 THEN "6e"
-when a.value_coded = 4705 THEN "4f"
-when a.value_coded = 4706 THEN "3d"
-when a.value_coded = 4707 THEN "3e"
-when a.value_coded = 4708 THEN "3f"
-when a.value_coded = 4709 THEN "3g"
-when a.value_coded = 4710 THEN "3h"
+when a.value_coded = 4696 THEN '5c'
+when a.value_coded = 4697 THEN '5d'
+when a.value_coded = 4698 THEN '5e'
+when a.value_coded = 4699 THEN '5f'
+when a.value_coded = 4700 THEN '5g'
+when a.value_coded = 4701 THEN '5h'
+when a.value_coded = 3686 THEN '6a'
+when a.value_coded = 3687 THEN '6b'
+when a.value_coded = 4702 THEN '6c'
+when a.value_coded = 4703 THEN '6d'
+when a.value_coded = 4704 THEN '6e'
+when a.value_coded = 4705 THEN '6f'
 else 'NewRegimen' end as regimen_name
 from obs a
 inner join 
 		(select o.person_id,max(obs_datetime) maxdate 
 		from obs o 
 		where obs_datetime <= '#endDate#'
+		and o.concept_id = 2250
 		group by o.person_id 
 		)latest 
 		on latest.person_id = a.person_id
@@ -512,6 +534,7 @@ inner join
 		(select person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
+		and concept_id = 3752
 		group by person_id 
 		)latest 
 	on latest.person_id = o.person_id
@@ -532,12 +555,13 @@ case
  when value_coded = 4246 then "5 Months"
  when value_coded = 4247 then "6 Months"
 else "other" 
-end AS drug_duration,obs_datetime
+end AS drug_duration,maxdate
 from obs o
 inner join 
 		(select a.person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
+		and concept_id = 4174
 		group by a.person_id 
 		)latest 
 		on latest.person_id = o.person_id
@@ -551,55 +575,63 @@ left outer JOIN
 (
 select a.person_id,case 
 when a.value_coded = 2201 then '1c'
-when a.value_coded = 2202 then '4c'
 when a.value_coded = 2203 then '1d'
-when a.value_coded = 2204 then '4d'
 when a.value_coded = 2205 then '1e'
 when a.value_coded = 2207 then '1f'
-when a.value_coded = 2209 then '2d'
-when a.value_coded = 2210 then '2c'
 when a.value_coded = 3672 then '1g'
 when a.value_coded = 3673 then '1h'
+when a.value_coded = 4678 THEN '1j'
+when a.value_coded = 4679 THEN '1k'
+when a.value_coded = 4680 THEN '1m'
+when a.value_coded = 4681 THEN '1n'
+when a.value_coded = 4682 THEN '1p'
+when a.value_coded = 4683 THEN '1q'
+when a.value_coded = 2210 then '2c'
+when a.value_coded = 2209 then '2d'
+when a.value_coded = 3674 then '2e'
+when a.value_coded = 3675 then '2f'
 when a.value_coded = 3676 then '2g'
+when a.value_coded = 3677 then '2h'
 when a.value_coded = 3678 then '2i'
+when a.value_coded = 4689 THEN '2j'
+when a.value_coded = 4690 THEN '2k'
+when a.value_coded = 4691 THEN '2l'
+when a.value_coded = 4692 THEN '2m'
+when a.value_coded = 4693 THEN '2n'
+when a.value_coded = 4694 THEN '2o'
+when a.value_coded = 4695 THEN '2p'
+when a.value_coded = 3683 THEN '3a'
+when a.value_coded = 3684 THEN '3b'
+when a.value_coded = 3685 THEN '3c'
+when a.value_coded = 4706 THEN '3d'
+when a.value_coded = 4707 THEN '3e'
+when a.value_coded = 4708 THEN '3f'
+when a.value_coded = 4709 THEN '3g'
+when a.value_coded = 4710 THEN '3h'
+when a.value_coded = 2202 then '4c'
+when a.value_coded = 2204 then '4d'
 when a.value_coded = 3679 then '4e'
 when a.value_coded = 3680 then '4f'
+when a.value_coded = 4684 THEN '4g'
+when a.value_coded = 4685 THEN '4h'
+when a.value_coded = 4686 THEN '4i'
+when a.value_coded = 4687 THEN '4j'
+when a.value_coded = 4688 THEN '4k'
 when a.value_coded = 3681 then '5a'
 when a.value_coded = 3682 then '5b'
 when a.value_coded = 2143 then 'Other'
-when a.value_coded = 4678 THEN "1j"
-when a.value_coded = 4679 THEN "1k"
-when a.value_coded = 4680 THEN "1m"
-when a.value_coded = 4681 THEN "1n"
-when a.value_coded = 4682 THEN "1p"
-when a.value_coded = 4683 THEN "1q"
-when a.value_coded = 4684 THEN "4g"
-when a.value_coded = 4685 THEN "4h"
-when a.value_coded = 4686 THEN "4i"
-when a.value_coded = 4687 THEN "4j"
-when a.value_coded = 4688 THEN "4k"
-when a.value_coded = 4689 THEN "2j"
-when a.value_coded = 4690 THEN "2k"
-when a.value_coded = 4691 THEN "2l"
-when a.value_coded = 4692 THEN "2m"
-when a.value_coded = 4693 THEN "2n"
-when a.value_coded = 4694 THEN "2o"
-when a.value_coded = 4695 THEN "2p"
-when a.value_coded = 4696 THEN "5c"
-when a.value_coded = 4697 THEN "5d"
-when a.value_coded = 4698 THEN "5e"
-when a.value_coded = 4699 THEN "5f"
-when a.value_coded = 4700 THEN "5g"
-when a.value_coded = 4701 THEN "5h"
-when a.value_coded = 4702 THEN "6c"
-when a.value_coded = 4703 THEN "6d"
-when a.value_coded = 4704 THEN "6e"
-when a.value_coded = 4705 THEN "4f"
-when a.value_coded = 4706 THEN "3d"
-when a.value_coded = 4707 THEN "3e"
-when a.value_coded = 4708 THEN "3f"
-when a.value_coded = 4709 THEN "3g"
-when a.value_coded = 4710 THEN "3h"
+when a.value_coded = 4696 THEN '5c'
+when a.value_coded = 4697 THEN '5d'
+when a.value_coded = 4698 THEN '5e'
+when a.value_coded = 4699 THEN '5f'
+when a.value_coded = 4700 THEN '5g'
+when a.value_coded = 4701 THEN '5h'
+when a.value_coded = 3686 THEN '6a'
+when a.value_coded = 3687 THEN '6b'
+when a.value_coded = 4702 THEN '6c'
+when a.value_coded = 4703 THEN '6d'
+when a.value_coded = 4704 THEN '6e'
+when a.value_coded = 4705 THEN '6f'
 else 'New Regimen' end as intake_regimen
 	from obs a,obs b
 	where a.person_id = b.person_id
