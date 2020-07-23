@@ -92,7 +92,12 @@
 					"codedConceptName":"ANC, Place of Birth",
 					"codedConceptName":"Mode of Delivery",
 					"allowAddMore": true
+			},			
+
+			"HTSIDX, Index Contact Information" : {
+					"allowAddMore": true
 			},
+			
 			"ANC, Family History": {
 				"multiSelect": true
 			},
