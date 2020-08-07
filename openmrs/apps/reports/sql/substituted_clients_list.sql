@@ -11,22 +11,19 @@ FROM (
 											   observed_age_group.name AS age_group,
 											   observed_age_group.sort_order AS sort_order
 
-						from obs o
-								-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
-								 INNER JOIN patient ON o.person_id = patient.patient_id 
+						from obs o 
+								 INNER JOIN patient ON o.person_id = patient.patient_id
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								 
-								 -- PROVIDER INITIATED TESTING AND COUNSELING
-								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4157 and os.value_coded = 2146
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-									AND patient.voided = 0 AND o.voided = 0
-								 )
-								 
-								 
+								 AND o.concept_id = 2273 and o.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								--  AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
+
+							--  -- Switched
+							-- 	 AND o.person_id in (
+							-- 		select distinct os.person_id 
+							-- 		from obs os
+							-- 		where os.concept_id = 2273 and os.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+							-- 		AND patient.voided = 0 AND o.voided = 0
+							-- 	 )								 							 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
@@ -34,13 +31,11 @@ FROM (
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
-								 -- Observations inside the HIV Testing and Couseling Form
-								 AND o.obs_group_id in (
-									select og.obs_id from obs og where og.concept_id = 2403
-								 )) AS HTSClients_HIV_Status
-		ORDER BY HTSClients_HIV_Status.Age)
+								 -- Observations inside the HIV care and Treatment Form
+								) AS substituted
+								ORDER BY substituted.Age)
 
-) AS HTS_Status_Detailed
+) AS substituted_clients
 
-ORDER BY HTS_Status_Detailed.sort_order
-			, HTS_Status_Detailed.Gender
+ORDER BY substituted_clients.sort_order
+			, substituted_clients.Gender

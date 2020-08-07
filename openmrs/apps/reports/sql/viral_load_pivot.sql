@@ -30,22 +30,14 @@ FROM
 								-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 AND o.concept_id = 4267 AND MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 								 
-								--  Clients With Blood Draw
-								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4277
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-									AND patient.voided = 0 AND o.voided = 0
-								 )
+
 								--  CLients with with viral load results
 								 AND o.person_id in (
 									select distinct os.person_id 
 									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4283
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -53,7 +45,7 @@ FROM
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-								 INNER JOIN reporting_age_group AS observed_age_group ON									CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								 INNER JOIN reporting_age_group AS observed_age_group ON CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						    WHERE observed_age_group.report_group_name = 'Modified_Ages'
                                                             -- Observations inside the HIV Testing and Couseling Form
@@ -80,22 +72,14 @@ FROM
 								-- HTS CLIENTS WITH HIV STATUS BY SEX AND AGE
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 AND o.concept_id = 4267 AND MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 								 
-								--  Clients With Blood Draw
-								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4277
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-									AND patient.voided = 0 AND o.voided = 0
-								 )
-								--  CLients with with no viral load results
+
+								--  CLients with with viral load results
 								 AND o.person_id not in (
 									select distinct os.person_id 
 									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4283
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -103,14 +87,13 @@ FROM
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-								 INNER JOIN reporting_age_group AS observed_age_group ON									CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								 INNER JOIN reporting_age_group AS observed_age_group ON CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						    WHERE observed_age_group.report_group_name = 'Modified_Ages'
                                                             -- Observations inside the HIV Testing and Couseling Form
 								 AND o.obs_group_id in (
 									select og.obs_id from obs og where og.concept_id IN (2403,4273)
-								 ))
-                             AS INDEX_CLIENTS
+								 )) AS INDEX_CLIENTS
 		ORDER BY INDEX_CLIENTS.Age)  
 
 
@@ -144,29 +127,21 @@ FROM
 								-- CLIENTS WITH A VIRAL LOAD RESULT DOCUMENTED WITHIN THE LAST 12 MONTHS 
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 AND o.concept_id = 4267 AND MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 
-								--  Clients With Blood Draw
-								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4277
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-									AND patient.voided = 0 AND o.voided = 0
-								 )
+
 								--  CLients with with viral load results
 								 AND o.person_id in (
 									select distinct os.person_id 
 									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4283
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-                                 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+                                 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
                                 -- Observations inside the HIV Testing and Couseling Form
@@ -192,29 +167,21 @@ FROM
 								-- CLIENTS WITH A VIRAL LOAD RESULT DOCUMENTED WITHIN THE LAST 12 MONTHS 
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								 AND o.concept_id = 4267 AND MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 
-								--  Clients With Blood Draw
-								 AND o.person_id in (
-									select distinct os.person_id 
-									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4277
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-									AND patient.voided = 0 AND o.voided = 0
-								 )
-								--  CLients with with no viral load results
+
+								--  CLients with with viral load results
 								 AND o.person_id not in (
 									select distinct os.person_id 
 									from obs os
-									where os.concept_id = 4276 and os.value_coded = 4283
-									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-                                 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+                                 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
                                 -- Observations inside the HIV Testing and Couseling Form
