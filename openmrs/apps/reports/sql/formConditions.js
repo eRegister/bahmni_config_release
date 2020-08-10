@@ -873,16 +873,9 @@ Bahmni.ConceptSet.FormConditions.rules = {
                  var followUpDate = formFieldValues['ART, Follow-up date'];
                  var conditions = { assignedValues: [], error: [] };
                  var dateUtil = Bahmni.Common.Util.DateUtil;
-				 var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                  if(followUpDate) {
-                         var daysDispesed;
-
-                         if(!retrospectiveDate) {
-                                daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
-                         } else {
-                                daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
-                         }
+                         var daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
 
                          // if(daysDispensed <= 0) {
                                  // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
@@ -893,24 +886,21 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                  if(daysDispensed >= 11 && daysDispensed < 21) {
                                          // Providing 2 days slack from 2 weeks, in case of weekends or other reasons
                                          drugSupplyPeriod = "HIVTC, Two weeks supply";
-                                 } else if (daysDispensed >= 25  && daysDispensed < 55) {
+                                 } else if (daysDispensed >= 25  && daysDispensed < 60) {
                                          drugSupplyPeriod = "HIVTC, One month supply";
-                                 } else if (daysDispensed >= 55 && daysDispensed < 85 ) {
+                                 } else if (daysDispensed >= 60 && daysDispensed < 90 ) {
                                          drugSupplyPeriod = "HIVTC, Two months supply";
-                                 } else if (daysDispensed >= 85 && daysDispensed < 115) {
+                                 } else if (daysDispensed >= 90 && daysDispensed < 120) {
                                          drugSupplyPeriod = "HIVTC, Three months supply";
-                                 } else if (daysDispensed >= 115 && daysDispensed < 145) {
+                                 } else if (daysDispensed >= 120 && daysDispensed < 150) {
                                          drugSupplyPeriod = "HIVTC, Four months supply";
-                                 } else if (daysDispensed >= 145 && daysDispensed < 175) {
+                                 } else if (daysDispensed >= 150 && daysDispensed < 180) {
                                          drugSupplyPeriod = "HIVTC, Five months supply";
-                                 } else if (daysDispensed >= 175 && daysDispensed < 205) {
+                                 } else if (daysDispensed >= 180 && daysDispensed < 210) {
                                          drugSupplyPeriod = "HIVTC, Six months supply";
-                                 } else if (daysDispensed >= 205) {
-                                         drugSupplyPeriod = "HIVTC, Seven+ months supply";
                                  } else {
-                                        // No action
+                                         // Nothing for now
                                  }
-
                                  conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
                                  conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod });
                          // }

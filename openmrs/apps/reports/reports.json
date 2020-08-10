@@ -1,4 +1,49 @@
 {
+
+  "substitutelist": {
+    "name": "Substituted Clients (List)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/substituted_clients_list.sql"
+    }
+},
+"substitutepivot": {
+  "name": "Substituted Clients (Pivot)",
+  "type": "MRSGeneric",
+  "config": {
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/substituted_clients_pivot.sql"
+  }
+},
+"switchlist": {
+  "name": "Switched (List)",
+  "type": "MRSGeneric",
+  "config": {
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/switched.sql"
+  }
+},
+
+"switchPivot": {
+  "name": "Switched (Pivot)",
+  "type": "MRSGeneric",
+  "config": {
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/switched_pivot.sql"
+  }
+},
+
+"viralLoadReportList": {
+  "name": "Viral Load Report For The Past 3 Months (List)",
+  "type": "MRSGeneric",
+  "config": {
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/viral_load_list.sql"
+  }
+},
+"viralLoadReportPivot": {
+  "name": "Viral Load Report For The Past 3 Months (Pivot)",
+  "type": "MRSGeneric",
+  "config": {
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/viral_load_pivot.sql"
+  }
+},
  "txcurrcombinedlist": {
      "name": "Current on ART Detailed (List)",
      "type": "MRSGeneric",
