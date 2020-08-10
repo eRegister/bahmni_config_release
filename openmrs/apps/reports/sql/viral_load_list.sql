@@ -1,3 +1,5 @@
+
+-- updated
 SELECT Patient_Identifier, Patient_Name, Age, Gender, age_group,VL_Results_Status,Date_Specimen_Collected, Duration_Results_Pending
 FROM (
 	
