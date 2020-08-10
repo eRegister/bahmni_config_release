@@ -17,17 +17,15 @@ FROM (
 						from obs o
 
 						      
-								
-								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND patient.voided = 0 AND o.voided = 0
-                                 AND o.concept_id = 4267 AND MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
-
+                                 INNER JOIN patient ON o.person_id = patient.patient_id 
+								 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+                                 AND patient.voided = 0 AND o.voided = 0
 
 								--  CLients with with viral load results
 								 AND o.person_id in (
 									select distinct os.person_id 
 									from obs os
-									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
+									where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
 									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
@@ -61,16 +59,16 @@ FROM (
 						from obs o
 								
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND o.concept_id = 4267 AND  MONTH(o.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)),MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
-                                --  AND o.concept_id = 4267 AND datediff(cast("#enddate#" as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
+								 AND o.concept_id = 4267 AND datediff(cast(o.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
                                  AND patient.voided = 0 AND o.voided = 0
                                             
                         AND o.person_id not in (
                                             select distinct os.person_id 
                                             from obs os
-                                            where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
+                                            where os.concept_id = 4268 AND datediff(cast(os.value_datetime as date), DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))) between 0 and 90
                                             AND patient.voided = 0 AND os.voided = 0
                                             )
+								 
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -78,7 +76,7 @@ FROM (
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+						  	 WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   ) AS viral_loadClients_status
 		ORDER BY viral_loadClients_status.Age)
 
