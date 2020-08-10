@@ -28,7 +28,7 @@ FROM (
 									select distinct os.person_id 
 									from obs os
 									where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 
@@ -69,7 +69,7 @@ FROM (
                                             select distinct os.person_id 
                                             from obs os
                                             where os.concept_id = 4268 AND MONTH(os.value_datetime) IN (MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)), MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -0 MONTH)))
-                                            AND patient.voided = 0 AND o.voided = 0
+                                            AND patient.voided = 0 AND os.voided = 0
                                             )
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
