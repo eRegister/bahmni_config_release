@@ -34,7 +34,7 @@
   "name": "Viral Load Report For The Past 3 Months (List)",
   "type": "MRSGeneric",
   "config": {
-    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/viral_load_report.sql"
+    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/viral_load_list.sql"
   }
 },
 "viralLoadReportPivot": {
