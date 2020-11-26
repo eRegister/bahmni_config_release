@@ -890,22 +890,22 @@ Bahmni.ConceptSet.FormConditions.rules = {
                          // } else {
                                  var drugSupplyPeriod = "";
 
-                                 if(daysDispensed >= 11 && daysDispensed < 21) {
+                                 if(daysDispensed >= 14 && daysDispensed < 28) {
                                          // Providing 2 days slack from 2 weeks, in case of weekends or other reasons
                                          drugSupplyPeriod = "HIVTC, Two weeks supply";
-                                 } else if (daysDispensed >= 25  && daysDispensed < 55) {
+                                 } else if (daysDispensed >= 28  && daysDispensed < 56) {
                                          drugSupplyPeriod = "HIVTC, One month supply";
-                                 } else if (daysDispensed >= 55 && daysDispensed < 85 ) {
+                                 } else if (daysDispensed >= 56 && daysDispensed < 84 ) {
                                          drugSupplyPeriod = "HIVTC, Two months supply";
-                                 } else if (daysDispensed >= 85 && daysDispensed < 115) {
+                                 } else if (daysDispensed >= 84 && daysDispensed < 112) {
                                          drugSupplyPeriod = "HIVTC, Three months supply";
-                                 } else if (daysDispensed >= 115 && daysDispensed < 145) {
+                                 } else if (daysDispensed >= 112 && daysDispensed < 140) {
                                          drugSupplyPeriod = "HIVTC, Four months supply";
-                                 } else if (daysDispensed >= 145 && daysDispensed < 175) {
+                                 } else if (daysDispensed >= 140 && daysDispensed < 168) {
                                          drugSupplyPeriod = "HIVTC, Five months supply";
-                                 } else if (daysDispensed >= 175 && daysDispensed < 205) {
+                                 } else if (daysDispensed >= 168 && daysDispensed < 196) {
                                          drugSupplyPeriod = "HIVTC, Six months supply";
-                                 } else if (daysDispensed >= 205) {
+                                 } else if (daysDispensed >= 196) {
                                          drugSupplyPeriod = "HIVTC, Seven+ months supply";
                                  } else {
                                         // No action
