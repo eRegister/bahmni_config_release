@@ -1681,20 +1681,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
         conditions.show.push("HTSIDX, Index UIC");
         conditions.show.push("HTSIDX, Index Contact Information"); 
         
-        // Show prior tests conditikons
-        conditions.hide.push("HTSIDX, Prior Test Result"); 
-        conditions.hide.push("HTSIDX, Duration since last test");
-
-
-        // Hide conditions if the contact has prior tests and the client knows their status
-        conditions.hide.push("HTSIDX,Tested");
-        conditions.hide.push("HTSIDX, IF No, why"); 
-        conditions.hide.push("HTSIDX,Date partner/child tested");
-        conditions.hide.push("HTSIDX,Partner/ Child Test Result");
-        conditions.hide.push("HTSIDX,Linked to care and treatment");
-        conditions.hide.push("HTSIDX,Partner/Child's PRE/ART Number"); 
-        conditions.hide.push("HTSIDX,Referral to Prevention");
-
     }else {  
         conditions.hide.push("HTSIDX, Index UIC");
         conditions.hide.push("HTSIDX, Index Contact Information");          
