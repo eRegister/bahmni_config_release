@@ -1,4 +1,4 @@
-SELECT Client_Name, contact_Name, Contact_age, Gender
+SELECT Client_Name as "Client Name", contact_Name as "Contact Name", Contact_age as "Contact Age", Gender as "Contact Gender"
 FROM (
 
 SELECT Id,concat(given_name ,' ',family_name) as Client_Name, concat(firstname,' ',surname) as contact_Name,Contact_age,c_gender.contact_gender as Gender from

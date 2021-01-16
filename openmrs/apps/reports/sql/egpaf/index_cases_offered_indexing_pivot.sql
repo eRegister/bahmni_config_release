@@ -31,7 +31,7 @@ FROM
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
 											   o.value_numeric AS vl_result,
-											   observed_age_group.sort_order AS sort_order
+											   observed_age_group.sort_order AS sort_order 
 
 						from obs o
 								-- CLIENTS WITH A VIRAL LOAD RESULT DOCUMENTED WITHIN THE LAST 12 MONTHS 
@@ -295,7 +295,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -352,7 +352,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -409,7 +409,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -466,7 +466,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -523,7 +523,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -580,7 +580,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -894,7 +894,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -947,7 +947,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -1000,7 +1000,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -1052,7 +1052,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -1103,7 +1103,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -1155,7 +1155,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 

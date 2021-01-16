@@ -273,7 +273,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -330,7 +330,7 @@ FROM
 
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -387,7 +387,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -444,7 +444,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -501,7 +501,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -558,7 +558,7 @@ FROM
                 from obs o
 						-- HTS CLIENTS WITH POSITIVE HIV STATUS BY SEX AND AGE
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						 AND o.concept_id = 2165 AND o.value_coded = 1738
+						
 						 AND patient.voided = 0 AND o.voided = 0
 						 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 						 
@@ -598,3 +598,69 @@ FROM
 						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
                    WHERE observed_age_group.report_group_name = 'Modified_Ages') AS INDEX_CLIENTS
 ORDER BY INDEX_CLIENTS.Age)
+
+UNION
+
+-- CLIENTS THAT ARE ON ART AND HAVE DECIDED TO BE PROVIDED WITH INDEXING ( REGARDLESS OF THEIR VIRAL LOAD)
+
+(SELECT patientIdentifier AS 'Patient Identifier', patientName AS 'Patient Name', Age, Gender, age_group, vl_result AS 'Patient_Health_Status','HVL_Routine' as 'Client_Program','Accepted' AS 'Indexing', sort_order
+FROM  
+		 
+						(select distinct patient.patient_id AS Id,
+											   patient_identifier.identifier AS patientIdentifier,
+											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+											   person.gender AS Gender,
+											   observed_age_group.name AS age_group,
+											  concat(o.value_numeric,' ',' m/l') AS vl_result,
+											   observed_age_group.sort_order AS sort_order
+
+						from obs o
+								-- CLIENTS WITH A VIRAL LOAD RESULT DOCUMENTED WITHIN THE LAST 12 MONTHS 
+								INNER JOIN patient ON o.person_id = patient.patient_id
+								AND o.concept_id = 3752 and o.voided=0
+								AND o.obs_id not in (
+										select os.obs_id
+										from obs os
+										where os.concept_id=2254
+										and os.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+										and os.obs_datetime in (
+												select max(oss.obs_datetime)
+												from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 2254 and oss.voided=0
+												and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+												group by p.person_id
+										)
+								 		and os.value_numeric > 20
+								)
+								AND person_id not in (
+										select os.person_id
+										from obs os
+										where os.concept_id=4280
+										and os.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+										and os.obs_datetime in (
+												select max(oss.obs_datetime)
+												from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4280 and oss.voided=0
+												and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+												group by p.person_id
+										) 
+										-- ROUTINE VL MONITORING TYPE ROUTINE
+										and os.value_coded = 4281
+								)	
+								--  ROUTINE VL MONITORING TYPE ROUTINE AND ACCEPTED INDEXING					 
+								AND o.person_id not in (
+									select distinct os.person_id
+									from obs os
+									where os.concept_id = 4759 and os.value_coded = 2146
+									AND os.voided = 0
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								)
+								AND o.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+								INNER JOIN person_name ON person.person_id = person_name.person_id
+								INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred = 1
+
+								INNER JOIN reporting_age_group AS observed_age_group ON
+									CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+									AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+						    WHERE observed_age_group.report_group_name = 'Modified_Ages') AS INDEX_CLIENTS
+		ORDER BY INDEX_CLIENTS.Age)  
