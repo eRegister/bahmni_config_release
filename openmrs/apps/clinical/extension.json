@@ -169,7 +169,49 @@
         "requiredPrivilege": "app:clinical"
     },
 
-    "bahmniClinicalPatientsSearchTBIntakeOrFollUpPatients": {
+    "bahmniClinicalPatientsSearchIPT": {
+      "id": "bahmni.clinical.patients.search.ipt",
+      "extensionPointId": "org.bahmni.patient.search",
+      "type": "config",
+      "extensionParams": {
+              "searchHandler": "emrapi.sqlSearch.ipt",
+              "translationKey": "MODULE_LABEL_IPT",
+              "forwardUrl": "#/default/patient/{{patientUuid}}/dashboard"
+      },
+      "label": "IPT",
+      "order": 6,
+      "requiredPrivilege": "app:clinical"
+  },
+
+    "bahmniClinicalPatientsSearchCervicalCancer": {
+      "id": "bahmni.clinical.patients.search.cervicalCancer",
+      "extensionPointId": "org.bahmni.patient.search",
+      "type": "config",
+      "extensionParams": {
+              "searchHandler": "emrapi.sqlSearch.cervicalCancer",
+              "translationKey": "MODULE_LABEL_CERVICAL_CANCER",
+              "forwardUrl": "#/default/patient/{{patientUuid}}/dashboard"
+      },
+      "label": "Cerval Cancer",
+      "order": 6,
+      "requiredPrivilege": "app:clinical"
+  },
+
+  "bahmniClinicalPatientsSearchFamilyPlanning": {
+    "id": "bahmni.clinical.patients.search.familyPlanning",
+    "extensionPointId": "org.bahmni.patient.search",
+    "type": "config",
+    "extensionParams": {
+            "searchHandler": "emrapi.sqlSearch.familyPlanning",
+            "translationKey": "MODULE_LABEL_FAMILY_PLANNING",
+            "forwardUrl": "#/default/patient/{{patientUuid}}/dashboard"
+    },
+    "label": "Family Planning",
+    "order": 6,
+    "requiredPrivilege": "app:clinical"
+  },
+  
+  "bahmniClinicalPatientsSearchTBIntakeOrFollUpPatients": {
         "id": "bahmni.clinical.patients.search.TBIntakeOrFollUpPatients",
         "extensionPointId": "org.bahmni.patient.search",
         "type": "config",
