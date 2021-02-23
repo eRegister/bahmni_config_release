@@ -652,6 +652,22 @@
           "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_combined_list.sql"
       }
   },
+  
+  "txcurretentionpivot_pepfar": {
+      "name": "TX_CURR Retention (Pivot)",
+      "type": "MRSGeneric",
+      "config": {
+          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_retention_pivot.sql"
+      }
+  },
+
+  "txcurretentionlist_perfar": {
+      "name": "TX_CURR Retention (List)",
+      "type": "MRSGeneric",
+      "config": {
+          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_retention_list.sql"
+      }
+  },  
 
   "txcurrmmd_list": {
       "name": "TX_CURR MMD (List)",
