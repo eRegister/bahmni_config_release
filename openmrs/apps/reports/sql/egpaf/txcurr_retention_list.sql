@@ -99,13 +99,15 @@ AND Clients_Seen.Id not in (
 -- NOT Restarted after missing for more than 28 days
 AND Clients_Seen.Id not in (
 	select person_id
-	from
-		(select SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, max(oss.value_datetime), p.person_id
-		from obs oss
-			inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
-			and oss.value_datetime < cast('#endDate#' as DATE)
-		group by p.person_id
-		having datediff(CAST('#endDate#' AS DATE), max(oss.value_datetime)) > 28) as latest_followup_obs)
+	from 
+	(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+		 from obs oss
+		 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+		 and oss.obs_datetime < cast('#startDate#' as DATE)
+		 group by p.person_id
+		 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+)
+
 AND Clients_Seen.Id not in 
 			(
 			select distinct person_id 
