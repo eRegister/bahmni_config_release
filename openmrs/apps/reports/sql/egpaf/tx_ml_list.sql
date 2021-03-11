@@ -1,6 +1,6 @@
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TX_ML_DIED' AS Outcome, sort_order
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'DIED' AS Outcome, sort_order
 FROM
-                (select distinct patient.patient_id AS Id,
+                (select patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -21,13 +21,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 AND 90) as Missed_Greater_Than_28Days
-						 )
-						 AND o.person_id in (
-									select person_id 
-									from person 
-									where death_date >= CAST('#startDate#' AS DATE) AND death_date <= CAST('#endDate#' AS DATE)
-									and dead = 1
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
 						 )
 						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -36,19 +30,21 @@ FROM
 						 INNER JOIN reporting_age_group AS observed_age_group ON
 						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				   		 AND o.person_id in (
+								select person_id 
+								from person 
+								where death_date >= CAST('#startDate#' AS DATE) AND death_date <= CAST('#endDate#' AS DATE)
+								and dead = 1
+						 )
 				   ) AS TxMLClients
 				  ORDER BY TxMLClients.Age)
 				  
-				  
 UNION
 
-
-
-
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TX_ML_TOUT' AS Outcome, sort_order
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TOUT' AS Outcome, sort_order
 FROM
-                (select distinct patient.patient_id AS Id,
+                (select patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -69,39 +65,31 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 AND 90) as Missed_Greater_Than_28Days
-						 )
-						 -- Transfered Out to Another Site
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )						 
+						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+						 INNER JOIN person_name ON person.person_id = person_name.person_id
+						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+						 INNER JOIN reporting_age_group AS observed_age_group ON
+						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				   		 -- Transfered Out to Another Site
 					     AND o.person_id in (
 								select distinct os.person_id 
 								from obs os
 								where os.concept_id = 4155 and os.value_coded = 2146
 								AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
 					     )
-						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
+
 				   ) AS TxRttClients
-				  ORDER BY TxRttClients.Age)
-				  
-				  
-				  
-				  
-				  
+				  ORDER BY TxRttClients.Age)		  
+
 UNION
 
-
-
-
-
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TX_ML_STOPPED' AS Outcome, sort_order
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'STOPPED' AS Outcome, sort_order
 FROM
-                (select distinct patient.patient_id AS Id,
+                (select patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -122,9 +110,24 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 AND 90) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
 						 )
+						 -- NOT Transfered Out to Another Site
+					     AND o.person_id not in (
+								select distinct os.person_id 
+								from obs os
+								where os.concept_id = 4155 and os.value_coded = 2146
+								AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+					     )
 
+						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+						 INNER JOIN person_name ON person.person_id = person_name.person_id
+						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+						 INNER JOIN reporting_age_group AS observed_age_group ON
+						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				   
 						 -- ART TREATMENT INTERRUPTION/REFUSED OR STOPPED
 					     AND o.person_id in (
 								select distinct os.person_id 
@@ -132,27 +135,14 @@ FROM
 								where os.concept_id = 3701 
 								AND os.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
 					     )
-
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
 				   ) AS TxMLClients
 				  ORDER BY TxMLClients.Age)
-				  
-				  
-				  
 
 UNION
 
-
-
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TX_ML_LFTU<3m' AS Outcome, sort_order
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'LFTU<3m' AS Outcome, sort_order
 FROM
-                (select distinct patient.patient_id AS Id,
+                (select patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -173,37 +163,37 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 AND 90) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
 						 )
-
+						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+						 INNER JOIN person_name ON person.person_id = person_name.person_id
+						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+						 INNER JOIN reporting_age_group AS observed_age_group ON
+						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						 -- INITIATED ON ART LESS THAN 3 MONTHS AGO
 					     AND o.person_id in (
 								select distinct os.person_id 
 								from obs os
 								where os.concept_id = 2249
 								AND datediff(CAST('#startDate#' AS DATE), os.value_datetime) BETWEEN 0 AND 90						
-					     )						 
-						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-						 INNER JOIN person_name ON person.person_id = person_name.person_id
-						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
-						 INNER JOIN reporting_age_group AS observed_age_group ON
-						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
-						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
+					     )
+						 -- NOT Transfered Out to Another Site
+					     AND o.person_id not in (
+								select distinct os.person_id 
+								from obs os
+								where os.concept_id = 4155 and os.value_coded = 2146
+								AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+					     )
 				   ) AS TxMLClients
 				  ORDER BY TxMLClients.Age)
-				  
-				  
-				  
-				  
+		  
 UNION
 
-
-
-
-(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'TX_ML_LFTU>3m' AS Outcome, sort_order
+(SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name", Age, Gender, age_group, 'LFTU>3m' AS Outcome, sort_order
 FROM
-                (select distinct patient.patient_id AS Id,
+                (select patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -224,22 +214,28 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 AND 90) as Missed_Greater_Than_28Days
-						 )
-
-						 -- INITIATED ON ART MORE THAN 3 MONTHS AGO
-					     AND o.person_id in (
-								select distinct os.person_id 
-								from obs os
-								where os.concept_id = 2249
-								AND datediff(CAST('#startDate#' AS DATE), os.value_datetime) >= 90						
-					     )						 
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
 						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 						 INNER JOIN reporting_age_group AS observed_age_group ON
 						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				   		 -- INITIATED ON ART MORE THAN 3 MONTHS AGO
+					     AND o.person_id in (
+								select distinct os.person_id 
+								from obs os
+								where os.concept_id = 2249
+								AND datediff(CAST('#startDate#' AS DATE), os.value_datetime) >= 90						
+					     )	
+						 -- NOT Transfered Out to Another Site
+					     AND o.person_id not in (
+								select distinct os.person_id 
+								from obs os
+								where os.concept_id = 4155 and os.value_coded = 2146
+								AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+					     )
 				   ) AS TxMLClients
 				  ORDER BY TxMLClients.Age)
