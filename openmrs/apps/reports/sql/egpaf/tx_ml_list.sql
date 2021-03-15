@@ -21,7 +21,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
 						 )
 						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -65,7 +65,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
 						 )						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -110,7 +110,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
 						 )
 						 -- NOT Transfered Out to Another Site
 					     AND o.person_id not in (
@@ -163,7 +163,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
 						 )
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -214,7 +214,7 @@ FROM
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
 						 )						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
