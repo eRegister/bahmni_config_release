@@ -1,20 +1,4 @@
 {
- "txcurrcombinedlist": {
-     "name": "Current on ART Detailed (List)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_list.sql"
-      }
-     },
- 
- "txcurrcombinedpivot": {
-     "name": "Current on ART Detailed (Pivot)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/txcurr_combined_pivot.sql"
-    }
-   }, 
-   
  "currentonart_jointmissedListSQL": {
      "name": "ART clients with Appointment Status (List)",
      "type": "MRSGeneric",
@@ -54,14 +38,6 @@
        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/Enrolled.sql"
     }
    },
-
- "regimens": {
-     "name": "Current on ART with regimens (List)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/includeregimen.sql"
-    }
-   },
    
  "viralloadresultsstatuslist": {
      "name": "Viral Load Results Status, within 3 months (List)",
@@ -78,14 +54,6 @@
        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/viral_load_pivot.sql"
     }
    },   
-
- "Modified_ART": {
-     "name": "Current on ART with Modified ages (pivot)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/modified_txcurr_pivot.sql"
-    }
-   },
    
  "substitutedclientslist": {
      "name": "Substituted Clients (List)",
@@ -200,14 +168,6 @@
       }
      },
 
- "TB_Outcomes": {
-     "name": "TB Outcomes (List)",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/TB_Outcomes.sql"
-      }
-     },
-
  "DQA_Tool": {
      "name": "Data Quality Assessment tool",
      "type": "MRSGeneric",
@@ -237,14 +197,6 @@
      "type": "MRSGeneric",
      "config": {
      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/testing_strategy.sql"
-      }
-     },
-
- "Contact_TB": {
-     "name": "TB Contact Tracing and Screening",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/TB_contact.sql"
       }
      },
 
@@ -746,6 +698,13 @@
       "type": "MRSGeneric",
       "config": {
           "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txpvls_denominator_pivot.sql"
+      }
+  },
+  "stockstatus_arvs": {
+      "name": "Informed Push ARVs",
+      "type": "ERPGeneric",
+      "config": {
+          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ARVs.sql"
       }
   }
 }

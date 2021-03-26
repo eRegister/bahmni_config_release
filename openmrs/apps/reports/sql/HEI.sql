@@ -20,7 +20,7 @@ FROM
 -- prophylaxis received before 6wks
 select person_id as Id,'Prophylaxis_received' as exposure
 from obs
-where concept_id = 2372 and value_coded in(4394,4395,4396,4398)
+where concept_id = 4590 and value_coded in(4593,4594,4595)
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
@@ -43,42 +43,42 @@ AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 UNION
 select person_id as Id,'Exclusive_breastfeeding' as exposure
 from obs
-where concept_id = 2376 and value_coded = 2373
+where concept_id = 4730 and value_coded = 4731
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'Replacement_breastfeeding' as exposure
 from obs
-where concept_id = 2376 and value_coded = 2374
+where concept_id = 4730 and value_coded = 4732
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'mixed_feeding' as exposure
 from obs
-where concept_id = 2376 and value_coded = 2375
+where concept_id = 4730 and value_coded = 4733
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'Given_NVP' as exposure
 from obs
-where concept_id = 4591
+where concept_id = 4590 and value_coded = 4593
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'Given_INH' as exposure
 from obs
-where concept_id = 4594
+where concept_id = 4590 and value_coded = 4595
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'Given_CTX' as exposure
 from obs
-where concept_id = 4595
+where concept_id = 4590 and value_coded = 4594
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
@@ -97,6 +97,6 @@ AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 ) ab
 )bc
-group by exposure
+-- group by exposure
 -- HIV status at 24mnths
 -- 4606,4607,4608,4609,4610,4611,4612,3650,1143
