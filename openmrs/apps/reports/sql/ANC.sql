@@ -188,7 +188,7 @@ FROM
 								) as a
 								WHERE age < 20
 												)
-			and concept_id in (4300,4299)
+			and concept_id in (4300,4299) AND value_coded in (4668)
 			AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 			AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 			
@@ -269,7 +269,7 @@ FROM
 								) as a
 								WHERE age < 20
 												)
-			where concept_id = 4367 and value_coded != 4368
+			where (concept_id = 4367 and value_coded != 4368)
 			AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 			AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 			
@@ -445,7 +445,7 @@ FROM
 								) as a
 								WHERE age >=20
 												)
-			and concept_id in (4300,4299)
+			and concept_id in (4300,4299) AND value_coded in (4668)
 			AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 			AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 			
@@ -526,7 +526,7 @@ FROM
 								) as a
 								WHERE age >=20
 												)
-			where concept_id = 4367 and value_coded != 4368
+			where (concept_id = 4367 and value_coded != 4368)
 			AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 			AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 		)as a	
