@@ -19,10 +19,20 @@ FROM
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
-						 )
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) <= 28) as On_ART_Beginning_Quarter
+						 )						 
 						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -63,10 +73,21 @@ FROM
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
-						 )						 
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) <= 28) as On_ART_Beginning_Quarter
+						 )
+						 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
 						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -108,10 +129,20 @@ FROM
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
-						 )
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) <= 28) as On_ART_Beginning_Quarter
+						 )		
 						 -- NOT Transfered Out to Another Site
 					     AND o.person_id not in (
 								select distinct os.person_id 
@@ -161,9 +192,19 @@ FROM
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) <= 28) as On_ART_Beginning_Quarter
 						 )
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
@@ -212,10 +253,20 @@ FROM
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss
 								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
+						 )
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 								 and oss.obs_datetime < cast('#startDate#' as DATE)
 								 group by p.person_id
-								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) between 29 and 90) as Missed_Greater_Than_28Days
-						 )						 
+								 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) <= 28) as On_ART_Beginning_Quarter
+						 )					 
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id
 						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
