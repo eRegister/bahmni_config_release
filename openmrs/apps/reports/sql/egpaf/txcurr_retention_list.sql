@@ -203,14 +203,18 @@ FROM
 								 )
 						 )
 
-						 -- Transfered Out to Another Site during thier latest encounter before the start date -- REVIEW ACCORDINGLY
+						 -- Transfered Out to Another Site during thier latest encounter before the start date
 						 AND o.person_id not in (
-								select distinct os.person_id 
-								from obs os
-								where os.concept_id = 4155 and os.value_coded = 2146
-								-- AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								AND os.obs_datetime < CAST('#startDate#' AS DATE)								
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_coded)), 20) AS last_obs_tout
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 4155 and oss.voided=0
+								 and oss.obs_datetime < cast('#startDate#' as DATE)
+								 group by p.person_id
+								 having last_obs_tout = 2146) as Transfered_Out_In_Last_Encounter
 						 )
+
 						 
 						-- NOT Transfered In from another Site
 						 AND o.person_id not in (
