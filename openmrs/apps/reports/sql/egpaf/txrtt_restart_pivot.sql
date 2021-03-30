@@ -1,13 +1,13 @@
 SELECT Total_Aggregated_TxCurr.AgeGroup
-		, Total_Aggregated_TxCurr.MissedAbv28Days_Males
-		, Total_Aggregated_TxCurr.MissedAbv28Days_Females
+		, Total_Aggregated_TxCurr.MissedAbv28Days_Males as Restarted_Males
+		, Total_Aggregated_TxCurr.MissedAbv28Days_Females as Restarted_Females
 		, Total_Aggregated_TxCurr.Total
 
 FROM (
 
 	(SELECT TXCURR_DETAILS.age_group AS 'AgeGroup'
-			, IF(TXCURR_DETAILS.Id IS NULL, 0, SUM(IF(TXCURR_DETAILS.Program_Status = 'MissedAbv28Days_Restarted' AND TXCURR_DETAILS.Gender = 'M', 1, 0))) AS Restarted_Males
-			, IF(TXCURR_DETAILS.Id IS NULL, 0, SUM(IF(TXCURR_DETAILS.Program_Status = 'MissedAbv28Days_Restarted' AND TXCURR_DETAILS.Gender = 'F', 1, 0))) AS Restarted_Females
+			, IF(TXCURR_DETAILS.Id IS NULL, 0, SUM(IF(TXCURR_DETAILS.Program_Status = 'MissedAbv28Days_Restarted' AND TXCURR_DETAILS.Gender = 'M', 1, 0))) AS MissedAbv28Days_Males
+			, IF(TXCURR_DETAILS.Id IS NULL, 0, SUM(IF(TXCURR_DETAILS.Program_Status = 'MissedAbv28Days_Restarted' AND TXCURR_DETAILS.Gender = 'F', 1, 0))) AS MissedAbv28Days_Females
 			, IF(TXCURR_DETAILS.Id IS NULL, 0, SUM(1)) as 'Total'
 			, TXCURR_DETAILS.sort_order
 			
