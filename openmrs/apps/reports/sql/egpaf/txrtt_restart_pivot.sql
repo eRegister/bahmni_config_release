@@ -295,33 +295,15 @@ FROM
 										-- SINCE THEIR LAST EXPECTED CONTACT WHO RESTARTED ARVs WITHIN THE REPORTING PERIOD
 										 INNER JOIN patient ON o.person_id = patient.patient_id
 										 AND patient.voided = 0 AND o.voided = 0
-										 AND o.concept_id = 3752 and o.value_datetime in
-										 (				
-												select latestFU
-												from
-													(
-														select distinct os.person_id, given_name, family_name, max(os.value_datetime) AS latestFU, datediff(CAST('#endDate#' AS DATE), max(value_datetime)) AS Num_Days
-														from obs os
-														inner join person_name pn on os.person_id = pn.person_id
-														inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-														inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-														where os.concept_id = 3752 
-														group by os.person_id
-														having Num_Days > 28
-													) AS MissedAppointGreaterThan28days
-										 )
 										 AND o.person_id in (
-												select person_id
-												from (
-														select distinct os.person_id, given_name, family_name, max(os.value_datetime) AS latestFU, datediff(CAST('#endDate#' AS DATE), max(value_datetime)) AS Num_Days
-														from obs os
-														inner join person_name pn on os.person_id = pn.person_id
-														inner join patient p  on pn.person_id = p.patient_id and pn.voided = 0
-														inner join person ps on ps.person_id = p.patient_id and ps.voided = 0
-														where os.concept_id = 3752 and os.value_datetime < CAST('#endDate#' AS DATE)
-														group by os.person_id
-														having Num_Days > 28
-												) AS MissedAppointGreaterThan28days
+											select person_id
+											from 
+												(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+												 from obs oss
+												 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+												 and oss.obs_datetime < cast('#startDate#' as DATE)
+												 group by p.person_id
+												 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) > 28) as Missed_Greater_Than_28Days
 										 )
 
 										 -- Client Seen: As either patient OR Treatment Buddy
@@ -340,6 +322,7 @@ FROM
 														where os.concept_id = 3708 AND os.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 												 )
 										 )
+										 
 										 -- Still on treatment at the end of the reporting period
 										 AND o.person_id in (
 											select person_id
