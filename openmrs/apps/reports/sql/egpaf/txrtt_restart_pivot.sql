@@ -67,13 +67,23 @@ FROM (
 											 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) <= 28) as Still_On_Treatment_End_Period
 									 )
 									 
-									 -- Transfered Out to Another Site
+									 -- Transfered Out to Another Site during thier latest encounter before the start date -- REVIEW ACCORDINGLY
 									 AND o.person_id not in (
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 4155 and os.value_coded = 2146
-											AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+											-- AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+											AND os.obs_datetime < CAST('#startDate#' AS DATE)								
 									 )
+									 
+									-- NOT Transfered In from another Site
+									 AND o.person_id not in (
+											select os.person_id 
+											from obs os
+											where (os.concept_id = 2253 AND DATE(os.value_datetime) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+											AND os.voided = 0					
+									 )
+									 
 									 AND o.person_id not in (
 												select person_id 
 												from person 
@@ -339,13 +349,23 @@ FROM
 												 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) <= 28) as Still_On_Treatment_End_Period
 										 )
 										 
-										 -- Transfered Out to Another Site
+										 -- Transfered Out to Another Site during thier latest encounter before the start date -- REVIEW ACCORDINGLY
 										 AND o.person_id not in (
 												select distinct os.person_id 
 												from obs os
 												where os.concept_id = 4155 and os.value_coded = 2146
-												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+												-- AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+												AND os.obs_datetime < CAST('#startDate#' AS DATE)								
 										 )
+										 
+										-- NOT Transfered In from another Site
+										 AND o.person_id not in (
+												select os.person_id 
+												from obs os
+												where (os.concept_id = 2253 AND DATE(os.value_datetime) BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE))
+												AND os.voided = 0					
+										 )
+										 
 										 AND o.person_id not in (
 													select person_id 
 													from person 

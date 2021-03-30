@@ -203,13 +203,14 @@ FROM
 								 )
 						 )
 
-						 -- NOT Transfered Out to Another Site
-					     AND o.person_id not in (
+						 -- Transfered Out to Another Site during thier latest encounter before the start date -- REVIEW ACCORDINGLY
+						 AND o.person_id not in (
 								select distinct os.person_id 
 								from obs os
 								where os.concept_id = 4155 and os.value_coded = 2146
-								AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
-					     )
+								-- AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+								AND os.obs_datetime < CAST('#startDate#' AS DATE)								
+						 )
 						 
 						-- NOT Transfered In from another Site
 						 AND o.person_id not in (
