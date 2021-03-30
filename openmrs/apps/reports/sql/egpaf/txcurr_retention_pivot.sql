@@ -229,6 +229,18 @@ FROM
 										where os.concept_id = 3708 AND os.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 )
 						 )
+						 
+						 -- Still on treatment at the end of the reporting period
+						 AND o.person_id in (
+							select person_id
+							from 
+								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+								 from obs oss
+								 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+								 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+								 group by p.person_id
+								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) <= 28) as Still_On_Treatment_End_Period
+						 )						 
 
 						 -- NOT Transfered Out to Another Site
 					     AND o.person_id not in (
@@ -1043,6 +1055,18 @@ FROM
 									where os.concept_id = 3708 AND os.value_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 							 )
 					 )
+					 
+					 -- Still on treatment at the end of the reporting period
+					 AND o.person_id in (
+						select person_id
+						from 
+							(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
+							 from obs oss
+							 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
+							 and oss.obs_datetime >= cast('#startDate#' as DATE) and oss.obs_datetime <= cast('#endDate#' as DATE)
+							 group by p.person_id
+							 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) <= 28) as Still_On_Treatment_End_Period
+					 )					 
 
 					 -- NOT Transfered Out to Another Site
 					 AND o.person_id not in (
