@@ -27,9 +27,13 @@ when value_coded = 4400 then '14_Weeks'
 when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
-		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where concept_id = 2471
+INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
+AND o.person_Id in (select person_id 
+							from obs where concept_id = 2471
+							AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+							AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+							)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -49,8 +53,12 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where concept_id = 4350 and value_coded  = 2146
+		AND o.person_Id in (select person_id from obs 
+							where concept_id = 4350 and value_coded  = 2146
+							AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+							AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+							)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -70,8 +78,12 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where concept_id = 4437 and value_coded = 2146
+		AND o.person_Id in (select person_id from obs 
+		where concept_id = 4437 and value_coded = 2146
+		AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+		AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+		)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -91,8 +103,12 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where concept_id = 4437 and value_coded = 2146
+		AND o.person_Id in (select person_id from obs 
+						where concept_id = 4437 and value_coded = 2146
+						AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+						AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+						)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -112,12 +128,15 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where (concept_id = 4445 and value_coded = 2146)
+		AND o.person_Id in (select person_id from obs 
+							where (concept_id = 4445 and value_coded = 2146)
+							AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+							AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+							)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
-
 
 UNION
 -- lactating
@@ -134,12 +153,15 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where concept_id = 4421 and value_coded = 2146
+		AND o.person_Id in (select person_id from obs 
+							where concept_id = 4421 and value_coded = 2146
+							AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+							AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+							)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
-
 
 UNION
 -- MUAC < 23 cm in lactating mothers at 14 weeks
@@ -156,8 +178,12 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where (concept_id  = 4435 and value_coded = 2146)
+		AND o.person_Id in (select person_id from obs 
+							where (concept_id  = 4435 and value_coded = 2146)
+							AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+							AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+							)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -178,8 +204,12 @@ when value_coded = 4401 then '6_Months'
 else 'Unknown Time' end as 'exam_time'
 from obs o
 		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where (concept_id  = 4427 and value_coded = 1738)
+		AND o.person_Id in (select person_id from obs 
+								where (concept_id  = 4427 and value_coded = 1738)
+								AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+								AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+								)
+where concept_id = 4614
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 )
@@ -188,23 +218,28 @@ UNION
 
 
 -- Hb < 8 at 6 weeks
-(select o.person_id as Id,'Hb_Under_8' as PNC_Visit,
-case 
-when value_coded = 4394 then '1st_Hour'
-when value_coded = 4395 then '12_Hours'
-when value_coded = 4396 then '24_Hours'
-when value_coded = 4397 then '1_Week'
-when value_coded = 4398 then '6_Weeks'
-when value_coded = 4399 then '10_Weeks'
-when value_coded = 4400 then '14_Weeks'
-when value_coded = 4401 then '6_Months'
-else 'Unknown Time' end as 'exam_time'
-from obs o
-		INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
-		AND o.person_Id in (select person_id from obs where concept_id = 4614)
-where (concept_id  = 4431 and value_coded = 4615)
-AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
-AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+	(select o.person_id as Id,'Hb_Under_8' as PNC_Visit,
+	case 
+	when value_coded = 4394 then '1st_Hour'
+	when value_coded = 4395 then '12_Hours'
+	when value_coded = 4396 then '24_Hours'
+	when value_coded = 4397 then '1_Week'
+	when value_coded = 4398 then '6_Weeks'
+	when value_coded = 4399 then '10_Weeks'
+	when value_coded = 4400 then '14_Weeks'
+	when value_coded = 4401 then '6_Months'
+	else 'Unknown Time' end as 'exam_time'
+	from obs o
+	INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
+	where concept_id  = 4614 
+	AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+	AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+	AND o.person_Id in (select person_id 
+						from obs 
+						where concept_id = 4431 and value_coded = 4615
+						AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
+						AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
+						)
 )
 
 				
