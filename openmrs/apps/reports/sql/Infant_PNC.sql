@@ -21,21 +21,21 @@ AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 UNION
 select person_id as ID,'Institutional_birth' as PostNatal
 from obs
-where concept_id = 1917
+where concept_id = 1917 and value_coded = 1915
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as ID,'home_birth' as PostNatal
 from obs
-where concept_id = 1916
+where concept_id = 1917 and value_coded = 1916
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
 UNION
 select person_id as Id,'ARV_prophylaxis' as PostNatal
 from obs
-where concept_id = 2372
+where concept_id = 4410 and value_coded = 2146
 AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 AND YEAR(obs_datetime) =  YEAR(CAST('#endDate#' AS DATE))
 
