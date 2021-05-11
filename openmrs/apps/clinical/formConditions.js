@@ -744,6 +744,11 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.hide.push("HIVTC, VL Pregnancy Status");
                         conditions.hide.push("HIVTC, VL Breastfeeding Status");
                         conditions.hide.push("HIVTC, Viral Load Monitoring Type");
+                        // Hide Pregnancy and Breastfeeding fields for Males and Young children
+                        if (patientAge < 12 || patientAge > 49 || patientGender == "M") {
+                                conditions.hide.push("HIVTC, VL Pregnancy Status");
+                                conditions.hide.push("HIVTC, VL Breastfeeding Status");
+                        }						
                 } else if (conditionConcept.includes('HIVTC, Draw Blood for VL Test') && !conditionConcept.includes('Viral Load Result')) {
                         conditions.show.push("HIVTC, Viral Load Blood drawn date");
                         conditions.show.push("HIVTC, VL Pregnancy Status");
@@ -769,6 +774,11 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         conditions.show.push("HIVTC, VL Pregnancy Status");
                         conditions.show.push("HIVTC, VL Breastfeeding Status");
                         conditions.show.push("HIVTC, Viral Load Monitoring Type");
+                        // Hide Pregnancy and Breastfeeding fields for Males and Young children
+                        if (patientAge < 12 || patientAge > 49 || patientGender == "M") {
+                                conditions.hide.push("HIVTC, VL Pregnancy Status");
+                                conditions.hide.push("HIVTC, VL Breastfeeding Status");
+                        }					
                 } else {
                         // Hide everything except Record Viral Load Results field
                         conditions.hide.push("HIVTC, Viral Load Data");
@@ -863,9 +873,16 @@ Bahmni.ConceptSet.FormConditions.rules = {
                  var followUpDate = formFieldValues['ART, Follow-up date'];
                  var conditions = { assignedValues: [], error: [] };
                  var dateUtil = Bahmni.Common.Util.DateUtil;
+				 var retrospectiveDate = $.cookie(Bahmni.Common.Constants.retrospectiveEntryEncounterDateCookieName);
 
                  if(followUpDate) {
-                         var daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
+                         var daysDispesed;
+
+                         if(!retrospectiveDate) {
+                                daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.now(), followUpDate);
+                         } else {
+                                daysDispensed = dateUtil.diffInDaysRegardlessOfTime(dateUtil.parse(retrospectiveDate.substr(1, 10)), followUpDate);
+                         }
 
                          // if(daysDispensed <= 0) {
                                  // conditions.error.push("Invalid input for Follow-up Date, must be a date in the future. Please correct.");
@@ -873,24 +890,27 @@ Bahmni.ConceptSet.FormConditions.rules = {
                          // } else {
                                  var drugSupplyPeriod = "";
 
-                                 if(daysDispensed >= 11 && daysDispensed < 21) {
-                                         // Providing 2 days slack from 2 weeks, in case of weekends or other reasons
+                                 if(daysDispensed >= 10 && daysDispensed < 21) {
+                                         // Providing 3 days slack from 2 weeks, in case of weekends or other reasons
                                          drugSupplyPeriod = "HIVTC, Two weeks supply";
-                                 } else if (daysDispensed >= 25  && daysDispensed < 60) {
+                                 } else if (daysDispensed >= 28  && daysDispensed < 56) {
                                          drugSupplyPeriod = "HIVTC, One month supply";
-                                 } else if (daysDispensed >= 60 && daysDispensed < 90 ) {
+                                 } else if (daysDispensed >= 56 && daysDispensed < 84 ) {
                                          drugSupplyPeriod = "HIVTC, Two months supply";
-                                 } else if (daysDispensed >= 90 && daysDispensed < 120) {
+                                 } else if (daysDispensed >= 84 && daysDispensed < 112) {
                                          drugSupplyPeriod = "HIVTC, Three months supply";
-                                 } else if (daysDispensed >= 120 && daysDispensed < 150) {
+                                 } else if (daysDispensed >= 112 && daysDispensed < 140) {
                                          drugSupplyPeriod = "HIVTC, Four months supply";
-                                 } else if (daysDispensed >= 150 && daysDispensed < 180) {
+                                 } else if (daysDispensed >= 140 && daysDispensed < 168) {
                                          drugSupplyPeriod = "HIVTC, Five months supply";
-                                 } else if (daysDispensed >= 180 && daysDispensed < 210) {
+                                 } else if (daysDispensed >= 168 && daysDispensed < 196) {
                                          drugSupplyPeriod = "HIVTC, Six months supply";
+                                 } else if (daysDispensed >= 196) {
+                                         drugSupplyPeriod = "HIVTC, Seven+ months supply";
                                  } else {
-                                         // Nothing for now
+                                        // No action
                                  }
+
                                  conditions.assignedValues.push({ field: "ARV drugs No. of days dispensed", fieldValue: daysDispensed });
                                  conditions.assignedValues.push({ field: "HIVTC, ARV drugs supply duration", fieldValue: drugSupplyPeriod });
                          // }
@@ -910,22 +930,24 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
         },
-
-
-        'HIVTC, HIV care IPT started': function (formName, formFieldValues) {
+		
+       'HIVTC, HIV care IPT started': function (formName, formFieldValues) {
                 var conditionConcept = formFieldValues['HIVTC, HIV care IPT started'];
                 var conditions = { show: [], hide: [] };
 
-                if (conditionConcept == "Yes") {
+                if (conditionConcept == "Treatment complete") {
+                        conditions.show.push("HIVTC, TPT completion Date");
+                }               
+                else if (conditionConcept == "Yes") {
                         conditions.show.push("IPT Adherence");
-                        conditions.show.push("IPT No. of days dispensed");
+                        conditions.show.push("IPT No. of days dispensed");                        
                 } else {
                         conditions.hide.push("IPT Adherence");
                         conditions.hide.push("IPT No. of days dispensed");
+                        conditions.hide.push("HIVTC, TPT completion Date");
                 }
                 return conditions;
-        },
-
+        },		
 
         'ARV Treatment Substituted': function (formName, formFieldValues) {
                 var conditionConcept = formFieldValues['ARV Treatment Substituted'];
@@ -1019,6 +1041,29 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
         },
         /*--------------------- HIV TESTING AND COUNSELING (HTC)----------------------*/
+                        'HIV, Testing Strategies': function (formName, formFieldValues){
+                        var TestingStrategies = formFieldValues['HIV, Testing Strategies'];
+                        var conditions = { show: [], hide: [], disable: [] };
+                        if (formName ==  "HIV Testing and Counseling Intake Template") {
+                            
+
+                                if (TestingStrategies == "HIVTC, Rapid Test") {
+                                        conditions.hide.push("HTC, Date Of Distribution", "HTC, Distribution channel", "HTC, Distribution Mode", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results")
+                                        conditions.show.push("HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set","HIVTC, TB Screened", "HTS, Referral", "ART, Condoms Dispensed", "HTC, Mode of Entry Point")
+                
+                                        
+        
+                                }else if (TestingStrategies == "HIVTC, Self Test") {
+                                        conditions.hide.push("Testing Eligibility, On ART Treatment","Testing Eligibility, Last Test Results","Testing Eligibility, Tested For HIV","Test For HIV","Offered prevention Counselling and or Linked to prevention services","Testing Eligibility, Last 12 Months","Testing Eligibility, Provided Adherence Counselling","Testing Eligibility, Last 12 Months","Testing Eligibility, Reinforced Prevention Counselling","Testing Eligibility, Time Last Test Done","Testing Eligibility, Counselled & linked to Treatment","HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set","HIVTC, TB Screened", "HTS, Referral", "ART, Condoms Dispensed","HTC, Mode of Entry Point")
+                                        conditions.show.push("HTC, Date Of Distribution", "HTC, Distribution channel", "HTC, Distribution Mode", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results")
+                                       
+                                }else {
+                                        conditions.hide.push("Test For HIV","Offered prevention Counselling and or Linked to prevention services","Testing Eligibility, Last 12 Months","Testing Eligibility, Provided Adherence Counselling","Testing Eligibility, Last 12 Months","Testing Eligibility, Reinforced Prevention Counselling","Testing Eligibility, Time Last Test Done","Testing Eligibility, Counselled & linked to Treatment","Testing Eligibility, On ART Treatment","Testing Eligibility, Last Test Results","HTC, Pre-test Counseling Set", "HTC, HIV Test", "HTC, Post-test Counseling Set","HIVTC, TB Screened", "HTS, Referral", "ART, Condoms Dispensed", "HTC, Date Of Distribution", "HTC, Distribution channel", "HTC, Distribution Mode", "HTC, Kit Collected For", "HTC, Key Pop", "HTC, Tested for HIV in The Past 12 Months", "HTC, HIVST Results", "HTC, Mode of Entry Point", "Testing Eligibility, Tested For HIV")  
+                                }
+                                
+                        }
+                        return conditions;
+                },
 
         'Type of client': function (formName, formFieldValues, patient) {
                 var conditionConcept = formFieldValues['Type of client'];
@@ -1307,7 +1352,8 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
         /*--------------------- SCREENING TOOL FOR HIV TESTING ELIGIBILITY ----------------------*/
         'HTC, Mode of Entry Point': function (formName, formFieldValues) {
-                if (formName == "HIV Testing and Counseling Intake Template") {
+                var strategy = formFieldValues['HIV, Testing Strategies'];
+                if (formName == "HIV Testing and Counseling Intake Template" && strategy == 'HIVTC, Rapid Test') {
                         var entryPoint= formFieldValues['HTC, Mode of Entry Point'];
                         var conditions = { show: [], hide: [], enable: [], disable: [] };
 
@@ -1332,12 +1378,13 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("Testing Eligibility, On ART Treatment");
                                 conditions.hide.push("Offered prevention Counselling and or Linked to prevention services")
                                 conditions.hide.push("Test For HIV");
-
+                                console.log(strategy)
 
                         }
 
+
                         if (!entryPoint){
-                          conditions.show.push("Testing Eligibility, Tested For HIV");
+                          conditions.hide.push("Testing Eligibility, Tested For HIV");
                           conditions.hide.push("Testing Eligibility, Last Test Results");
                           conditions.hide.push("HTC, Pre-test Counseling Set");
                           conditions.hide.push("HTC, Post-test Counseling Set");

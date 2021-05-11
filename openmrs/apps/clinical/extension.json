@@ -87,7 +87,7 @@
         "extensionPointId": "org.bahmni.patient.search",
         "type": "config",
         "extensionParams": {
-                "searchHandler": "emrapi.sqlSearch.neworpreart",
+                "searchHandler": "emrapi.sqlSearch.transferin",
                 "translationKey": "MODULE_LABEL_TRANSFER_IN",
                 "forwardUrl": "#/programs/patient/{{patientUuid}}/consultationContext"
         },
@@ -155,7 +155,19 @@
         "requiredPrivilege": "app:clinical"
     },
 
-
+   "bahmniClinicalPatientsSearchViralLoadPatients": {
+        "id": "bahmni.clinical.patients.search.ViralLoadPatients",
+        "extensionPointId": "org.bahmni.patient.search",
+        "type": "config",
+        "extensionParams": {
+                "searchHandler": "emrapi.sqlSearch.viralload",
+                "translationKey": "MODULE_LABEL_VIRAL_LOAD",
+                "forwardUrl": "#/default/patient/{{patientUuid}}/dashboard"
+        },
+        "label": "Viral Load",
+        "order": 6,
+        "requiredPrivilege": "app:clinical"
+    },
 
     "bahmniClinicalPatientsSearchTBIntakeOrFollUpPatients": {
         "id": "bahmni.clinical.patients.search.TBIntakeOrFollUpPatients",

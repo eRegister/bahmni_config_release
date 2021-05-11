@@ -22,9 +22,7 @@
                     "title": "Additional Patient Information",
                     "attributes": [
                         "primaryContact",
-			"extraAddressInfo",
 			"saphoneNumber",
-			"isMarried",
                         "isUrban",
 			"distanceFromCenter"
                     ]
@@ -112,9 +110,10 @@
                 "customAttributes": {
                     "label": "Relative/Phone",
                     "placeholder": "Relative or phone number",
-                    "fields": ["primaryRelative", "phoneNumber", "primaryContact", "saphoneNumber", "givenNameLocal", "familyNameLocal", "middleNameLocal", "extraAddressInfo"]
+                    "fields": ["primaryRelative", "telephoneNumber", "primaryContact", "saphoneNumber", "givenNameLocal", "familyNameLocal", "middleNameLocal", "extraAddressInfo", "mothersMaidenSurname"]
                 },
 		"searchByPatientIdentifier": true
             }
 }
 }      
+
