@@ -439,6 +439,14 @@
        }
       },
  
+    "hts_dqa": {
+        "name": "HTS DATA QUALITY ASSESSMENT",
+        "type": "MRSGeneric",
+        "config": {
+          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/HTS.sql"
+        }
+       },
+
    "pmtct_eid_list": {
        "name": " PMTCT EID (List)",
        "type": "MRSGeneric",

@@ -54,8 +54,9 @@
         	],
         	"additionalPatientIdentifiers": [
            		"National ID",
-			"HIV Program ID",
-			"TB Program ID"
+				"HIV Program ID",
+				"New HIV Program ID",				
+				"TB Program ID"
        		]
     	},
 		"programDisplayControl": {
