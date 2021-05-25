@@ -35,6 +35,28 @@ Bahmni.ConceptSet.FormConditions.rules = {
 
                 return conditions;
         },
+        
+        'Phase of TB Treatment': function (formName, formFieldValues) {
+
+                var result = formFieldValues['Phase of TB Treatment'];
+
+                var conditions = { enable: [], disable: []};
+
+                if (!result || result != 'Initial Treatment Phase') {
+
+                        conditions.enable.push("TB Treatment outcome");
+
+                } else {
+
+                        conditions.disable.push("TB Treatment outcome");
+
+                      //  conditions.disable.push("TB Action taken for treatment Failures and/or Drug resistant patients");
+
+                }
+
+                return conditions;
+
+        },
 
         'Phenotypic Test type performed': function (formName, formFieldValues) {
                 var phenotipicTest = formFieldValues['Phenotypic Test type performed'];
