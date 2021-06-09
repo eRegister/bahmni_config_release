@@ -36,6 +36,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 return conditions;
         },
         
+
         'Phase of TB Treatment': function (formName, formFieldValues) {
 
                 var result = formFieldValues['Phase of TB Treatment'];
