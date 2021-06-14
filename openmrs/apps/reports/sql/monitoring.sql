@@ -1495,10 +1495,10 @@ left outer join
 from obs o inner join 
 		(select a.person_id,max(obs_datetime) maxdate
 		 from obs a
-		 where obs_datetime <= '#endDate#' and concept_id = 4174
+		 where obs_datetime <= '#endDate#' and concept_id = 4174 and a.voided=0
 		 group by a.person_id 
 		) as latest on latest.person_id = o.person_id
-		where concept_id = 4174 and o.obs_datetime = maxdate
+		where concept_id = 4174 and o.obs_datetime = maxdate and o.voided=0
 ) duration ON txcurr.Id = duration.person_id
 
 left outer join
