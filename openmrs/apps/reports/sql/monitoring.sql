@@ -1,20 +1,21 @@
 select distinct Patient_Identifier,
-				Patient_Name, 
-				Age, 
-				DOB, 
-				Gender, 
-				age_group, 
+				Patient_Name,
+				Age,
+				DOB,
+				Gender,
+				age_group,
 				Program_Status,
-				regimen_name, 
-				encounter_date, 
-				follow_up, 
-				drug_duration, 
-				intake_regimen, 
-				ART_Start, 
-				Blood_drawn, 
-				Results_received, 
-				VL_result, 
-				Patient_received_results
+                ART_Start,
+                intake_regimen,
+				encounter_date,
+				follow_up,
+                regimen_name,
+				drug_duration,
+				Blood_drawn,
+				Results_received,
+				VL_result,
+				Patient_received_results,
+                TB_Status
 from
 (
 
@@ -30,21 +31,21 @@ from
 
 						from obs o
 								-- CLIENTS NEWLY INITIATED ON ART
-								 INNER JOIN patient ON o.person_id = patient.patient_id 
-								 AND (o.concept_id = 2249 
+								 INNER JOIN patient ON o.person_id = patient.patient_id
+								 AND (o.concept_id = 2249
 
-								AND MONTH(o.value_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+								AND MONTH(o.value_datetime) = MONTH(CAST('#endDate#' AS DATE))
 								AND YEAR(o.value_datetime) = YEAR(CAST('#endDate#' AS DATE))
 								 )
 								 AND patient.voided = 0 AND o.voided = 0
 								 AND o.person_id not in (
 									select distinct os.person_id from obs os
-									where os.concept_id = 3634 
-									AND os.value_coded = 2095 
-									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+									where os.concept_id = 3634
+									AND os.value_coded = 2095
+									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 									AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-								 )	
-								 
+								 )
+
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
@@ -70,7 +71,7 @@ from
 										-- CLIENTS SEEN FOR ART
 										 INNER JOIN patient ON o.person_id = patient.patient_id
 										 AND (o.concept_id = 3843 AND o.value_coded = 3841 OR o.value_coded = 3842)
-										 AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+										 AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 										 AND YEAR(o.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
 										 AND patient.voided = 0 AND o.voided = 0
 										 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -88,10 +89,10 @@ from
 				from obs o
 						-- CLIENTS NEWLY INITIATED ON ART
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-						 AND (o.concept_id = 2249 
-													AND MONTH(o.value_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+						 AND (o.concept_id = 2249
+													AND MONTH(o.value_datetime) = MONTH(CAST('#endDate#' AS DATE))
 													AND YEAR(o.value_datetime) = YEAR(CAST('#endDate#' AS DATE))
-								)		
+								)
 						 AND patient.voided = 0 AND o.voided = 0
 
 									)
@@ -105,8 +106,8 @@ from
 												(
 												select oss.person_id, SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, CAST(max(oss.value_datetime) AS DATE) as latest_followup_obs
 												from obs oss
-															where oss.voided=0 
-															and oss.concept_id=3752 
+															where oss.voided=0
+															and oss.concept_id=3752
 															and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 															and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 															group by oss.person_id) firstquery
@@ -130,10 +131,10 @@ from
 												group by os.person_id
 												having latest_transferout <= CAST('#endDate#' AS DATE)
 											) as TOUTS
-									)					
+									)
 				)
 
-		AND Clients_Seen.Id not in 
+		AND Clients_Seen.Id not in
 							(
 								select distinct(o.person_id)
 								from obs o
@@ -144,8 +145,8 @@ from
 													(
 													select oss.person_id, SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, CAST(max(oss.value_datetime) AS DATE) as latest_followup_obs
 													from obs oss
-																where oss.voided=0 
-																and oss.concept_id=3752 
+																where oss.voided=0
+																and oss.concept_id=3752
 																and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 																and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 																group by oss.person_id) firstquery
@@ -164,7 +165,7 @@ from
 													select distinct p.person_id
 													from person p
 													where dead = 1
-													and death_date <= CAST('#endDate#' AS DATE)		
+													and death_date <= CAST('#endDate#' AS DATE)
 								)
 							)
 
@@ -196,7 +197,7 @@ from
 											select observation_id
 											from
 												(select SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.obs_id)), 20) AS observation_id, max(oss.obs_datetime)
-												from obs oss 
+												from obs oss
 													inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 													and oss.value_datetime <= cast('#endDate#' as date)
 												group by p.person_id) as latest_followup_obs
@@ -204,20 +205,20 @@ from
 										and os.value_datetime < cast('#endDate#' as date)
 										and datediff(cast('#endDate#' as date), os.value_datetime) between 0 and 28
 								 )
-								 
+
 						and o.person_id not in (
 									select distinct os.person_id
 									from obs os
 									where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
-									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 									AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
 									)
-									
+
 						and o.person_id not in (
 									select distinct person_id
-									from obs 
+									from obs
 									where concept_id = 2249
-									AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+									AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 									AND YEAR(obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
 									)
 
@@ -235,7 +236,7 @@ from
 														group by os.person_id
 														having latest_transferout <= CAST('#endDate#' AS DATE)
 													) as TOUTS
-												
+
 													 where TOUTS.person_id not in
 														 (
 															 select oss.person_id
@@ -244,51 +245,51 @@ from
 															 and CAST(oss.obs_datetime AS DATE) > latest_transferout
 															 and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
 														 )
-								   
+
 												)
 									and o.person_id not in(
 												select distinct os.person_id
 												from obs os
 												where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
-												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 												AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
 									)
-												)					
+												)
 
 								 and o.person_id not in (
-											select person_id 
-											from person 
+											select person_id
+											from person
 											where death_date <= cast('#endDate#' as date)
 											and dead = 1
 								 )
-								 
+
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1						 
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE 	observed_age_group.report_group_name = 'Modified_Ages'
 
 						   AND o.person_id in (
-											select distinct (person_id)									
-											from 			
+											select distinct (person_id)
+											from
 												(select os.person_id, cast(max(os.value_datetime) as date) as latest_appointment
 														from obs os
-														where os.concept_id=3752 
+														where os.concept_id=3752
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
-														group by os.person_id		
+														group by os.person_id
 												) as app
 												where latest_appointment < CAST('#endDate#' AS DATE)
 												and DATEDIFF(CAST('#endDate#' AS DATE),latest_appointment) BETWEEN 0 AND 28
 
 
 
-						   )			
+						   )
 						   ) AS TwentyEightDayDefaulters
 						   order by TwentyEightDayDefaulters.patientName
 		)
-						   
+
 		UNION
 
 		(SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, DOB, Gender, age_group, 'Seen_Prev_Months' AS 'Program_Status'
@@ -303,8 +304,8 @@ from
 
 				from obs o
 						-- CAME IN PREVIOUS 1 MONTH AND WAS GIVEN (2, 3, 4, 5, 6 MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-						  AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) and YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+						  AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) and YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) AND patient.voided = 0 AND o.voided = 0
 						  AND (o.concept_id = 4174 and o.value_coded in (4175,4176, 4177, 4245,4246,4247,4820))
 						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 						 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
@@ -322,11 +323,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -342,12 +343,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 2 MONTHS AND WAS GIVEN (3, 4, 5, 6 MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded in (4176, 4177, 4245,4246,4247,4820)
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -363,14 +364,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-			   
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -383,12 +384,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 3 MONTHS AND WAS GIVEN (4, 5, 6 MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded in ( 4177, 4245,4246,4247,4820)
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0			 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -404,11 +405,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -424,12 +425,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 4 MONTHS AND WAS GIVEN (5, 6 MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded in ( 4245,4246,4247,4820)
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -445,11 +446,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -465,12 +466,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 5 MONTHS AND WAS GIVEN (6 MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded in (4246,4247,4820)
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -486,11 +487,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -506,12 +507,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 6 MONTHS AND WAS GIVEN (6+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded in (4247,4820)
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -527,11 +528,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -547,12 +548,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 7 MONTHS AND WAS GIVEN (7+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -568,11 +569,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -588,12 +589,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 8 MONTHS AND WAS GIVEN (7+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -609,11 +610,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -625,16 +626,16 @@ from
 										   floor(datediff(o.obs_datetime, person.birthdate)/365) AS Age,
 										   person.birthdate as DOB,
 										   person.gender as Gender,
-										   observed_age_group.name as age_group										   
+										   observed_age_group.name as age_group
 
 						from obs o
 						-- CAME IN PREVIOUS 9 MONTHS AND WAS GIVEN (7+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -650,11 +651,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -670,12 +671,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 10 MONTHS AND WAS GIVEN (7+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -691,11 +692,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -711,12 +712,12 @@ from
 
 						from obs o
 						-- CAME IN PREVIOUS 11 MONTHS AND WAS GIVEN (7+ MONHTS SUPPLY OF DRUGS)
-						 INNER JOIN patient ON o.person_id = patient.patient_id 
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+						 INNER JOIN patient ON o.person_id = patient.patient_id
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -732,14 +733,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-				
+
 
 		UNION
 
@@ -753,18 +754,18 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4175
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -1 MONTH))
-									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28	
+									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -780,11 +781,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -801,19 +802,19 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4176
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
-										
+
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -829,14 +830,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-				   
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -849,19 +850,19 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4177
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
-										
+
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -877,14 +878,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-				   
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -897,19 +898,19 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4245
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
-										
+
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -925,11 +926,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -945,18 +946,18 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4246
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -5 MONTH))
-									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28	
+									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
@@ -972,11 +973,11 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
 
@@ -992,24 +993,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4247
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -6 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1019,13 +1020,13 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
-							))	   
+							))
 
 		UNION
 
@@ -1039,24 +1040,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1066,14 +1067,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-	 
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -1086,24 +1087,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -8 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1113,14 +1114,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-		 
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -1133,24 +1134,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -9 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1160,14 +1161,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
-							))  
-		 
+							))
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -1180,24 +1181,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -10 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1207,14 +1208,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-		 
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -1227,24 +1228,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -11 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1254,14 +1255,14 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
-							))                                                                                              	
-		
+							))
+
 		UNION
 
 		(select distinct patient.patient_id AS Id,
@@ -1274,24 +1275,24 @@ from
 
 						from obs o
 						 INNER JOIN patient ON o.person_id = patient.patient_id
-							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) 
-							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) 
-							 AND patient.voided = 0 AND o.voided = 0 
+							 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH))
+							 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH))
+							 AND patient.voided = 0 AND o.voided = 0
 							 AND o.concept_id = 4174 and o.value_coded = 4820
 							 AND o.person_id in (
 								select distinct os.person_id from obs os
-								where 
-									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) 
+								where
+									MONTH(os.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH))
 									AND YEAR(os.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH))
 									AND os.concept_id = 3752 AND DATEDIFF(os.value_datetime, CAST('#endDate#' AS DATE)) BETWEEN 0 AND 28
 							 )
-							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0				 
+							 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 							 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
 							 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 							 INNER JOIN reporting_age_group AS observed_age_group ON
 									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-				   WHERE observed_age_group.report_group_name = 'Modified_Ages'	
+				   WHERE observed_age_group.report_group_name = 'Modified_Ages'
 						   and o.person_id not in (
 								select distinct(person_id)
 								from
@@ -1301,30 +1302,30 @@ from
 														where os.concept_id=3843
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit
 								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								AND CAST(o.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-								and latest_visit > CAST(o.obs_datetime AS DATE) 
+								and latest_visit > CAST(o.obs_datetime AS DATE)
 								and latest_visit <= CAST('#endDate#' AS DATE)
 							))
-				   
+
 		) AS ARTCurrent_PrevMonths
-		 
+
 		WHERE ARTCurrent_PrevMonths.Id not in (
-						SELECT os.person_id 
+						SELECT os.person_id
 						FROM obs os
 						WHERE (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
-						AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+						AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE))
 						AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
 												)
 		and ARTCurrent_PrevMonths.Id not in (
 					   select distinct patient.patient_id AS Id
 					   from obs oss
 								   -- CLIENTS NEWLY INITIATED ON ART
-						INNER JOIN patient ON oss.person_id = patient.patient_id													
-						AND (oss.concept_id = 2249 
-						AND MONTH(oss.value_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+						INNER JOIN patient ON oss.person_id = patient.patient_id
+						AND (oss.concept_id = 2249
+						AND MONTH(oss.value_datetime) = MONTH(CAST('#endDate#' AS DATE))
 						AND YEAR(oss.value_datetime) = YEAR(CAST('#endDate#' AS DATE))
 						)
 						AND patient.voided = 0 AND oss.voided = 0)
@@ -1338,8 +1339,8 @@ from
 														(
 														select oss.person_id, SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, max(oss.value_datetime) as latest_followup_obs
 														from obs oss
-																	where oss.voided=0 
-																	and oss.concept_id=3752 
+																	where oss.voided=0
+																	and oss.concept_id=3752
 																	and oss.obs_datetime <= CAST('#endDate#' AS DATE)
 																	and oss.obs_datetime > DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 																	group by oss.person_id) firstquery
@@ -1370,7 +1371,7 @@ from
 											select distinct p.person_id
 											from person p
 											where dead = 1
-											and death_date <= CAST('#endDate#' AS DATE)		
+											and death_date <= CAST('#endDate#' AS DATE)
 												)
 
 		 and ARTCurrent_PrevMonths.Id not in ( -- cater for clients due for appointments who may move to missed
@@ -1383,17 +1384,17 @@ from
 														where os.concept_id=3752
 														and os.obs_datetime <= CAST('#endDate#' AS DATE)
 														group by os.person_id
-														
+
 										) as visit ON o.person_id  = visit.person_id
-								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH) 
+								where CAST(o.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 								and latest_appointment < CAST('#endDate#' AS DATE)
-							)                                       
+							)
 		order by ARTCurrent_PrevMonths.patientName)
 
 ) as txcurr left outer join (
 		-- regimen
-		select a.person_id, 
-		case 
+		select a.person_id,
+		case
 		when a.value_coded = 2201 then '1c'
 		when a.value_coded = 2202 then '4c'
 		when a.value_coded = 2203 then '1d'
@@ -1446,31 +1447,31 @@ from
 		when a.value_coded = 4710 THEN "3h"
 		else 'NewRegimen' end as regimen_name
 		from obs a
-		inner join 
-				(select o.person_id,max(obs_datetime) maxdate 
-				from obs o 
+		inner join
+				(select o.person_id,max(obs_datetime) maxdate
+				from obs o
 				where obs_datetime <= '#endDate#'
 				and o.concept_id = 2250
-				group by o.person_id 
-				)latest 
+				group by o.person_id
+				)latest
 				on latest.person_id = a.person_id
-		where a.concept_id = 2250 
+		where a.concept_id = 2250
 		and  a.obs_datetime = maxdate
-		
+
 
 ) as regimen ON txcurr.Id = regimen.person_id
 
 left outer join
 -- encounter date
 (select o.person_id,CAST(maxdate AS DATE) as encounter_date,CAST(value_datetime AS DATE) as follow_up
-from obs o 
-inner join 
-		(select person_id,max(obs_datetime) maxdate 
+from obs o
+inner join
+		(select person_id,max(obs_datetime) maxdate
 		from obs a
 		where obs_datetime <= '#endDate#'
 		and concept_id = 3752 and voided=0
-		group by person_id 
-		)latest 
+		group by person_id
+		)latest
 	on latest.person_id = o.person_id
 	where concept_id = 3752
 	and  o.obs_datetime = maxdate and voided=0
@@ -1489,14 +1490,14 @@ left outer join
 			 when value_coded = 4246 then "5 Months"
 			 when value_coded = 4247 then "6 Months"
 			 when value_coded = 4820 then "7 Months"
-			 else "other" 
+			 else "other"
 		end AS drug_duration,
 		maxdate
-from obs o inner join 
+from obs o inner join
 		(select a.person_id,max(obs_datetime) maxdate
 		 from obs a
 		 where obs_datetime <= '#endDate#' and concept_id = 4174 and a.voided=0
-		 group by a.person_id 
+		 group by a.person_id
 		) as latest on latest.person_id = o.person_id
 		where concept_id = 4174 and o.obs_datetime = maxdate and o.voided=0
 ) duration ON txcurr.Id = duration.person_id
@@ -1504,7 +1505,7 @@ from obs o inner join
 left outer join
 -- intake regimen
 (
-select a.person_id,case 
+select a.person_id,case
 when a.value_coded = 4714 then '1a'
 when a.value_coded = 4715 then '1b'
 when a.value_coded = 2201 then '1c'
@@ -1544,7 +1545,7 @@ when a.value_coded = 4694 THEN "2o"
 when a.value_coded = 4695 THEN "2p"
 when a.value_coded = 4696 THEN "5c"
 when a.value_coded = 4697 THEN "5d"
-when a.value_coded = 4698 THEN "5e" 
+when a.value_coded = 4698 THEN "5e"
 when a.value_coded = 4699 THEN "5f"
 when a.value_coded = 4700 THEN "5g"
 when a.value_coded = 4701 THEN "5h"
@@ -1564,7 +1565,7 @@ else 'New Regimen' end as intake_regimen
 	and b.concept_id = 2397
 	and a.obs_datetime = b.obs_datetime
 	) intakes ON txcurr.Id = intakes.person_id
-	
+
 -- ART START
 	left outer join
 	(
@@ -1575,68 +1576,93 @@ else 'New Regimen' end as intake_regimen
 -- date blood drawn
 	left outer join
 	(select o.person_id,CAST(value_datetime AS DATE) as Blood_drawn
-	from obs o inner join 
-		(select person_id,max(obs_datetime) maxdate 
+	from obs o inner join
+		(select person_id,max(obs_datetime) maxdate
 		 from obs a
 		 where obs_datetime <= '#endDate#' and concept_id = 4267 and a.voided=0
-		 group by person_id 
+		 group by person_id
 		) as latest on latest.person_id = o.person_id
-	where concept_id = 4267 and  o.obs_datetime = maxdate	
+	where concept_id = 4267 and  o.obs_datetime = maxdate
 	) as blood_draw
 ON txcurr.Id = blood_draw.person_id
 
 -- date results received
 left outer join
 (select o.person_id,CAST(value_datetime AS DATE) as Results_received
-from obs o 
-inner join 
-		(select person_id,max(obs_datetime) maxdate 
+from obs o
+inner join
+		(select person_id,max(obs_datetime) maxdate
 		from obs a
 		where obs_datetime <= '#endDate#'
 		and concept_id = 4268 and a.voided=0
-		group by person_id 
-		)latest 
+		group by person_id
+		)latest
 	on latest.person_id = o.person_id
 	where concept_id = 4268
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = maxdate
 	)results_rece
 ON txcurr.Id = results_rece.person_id
 
 -- results
 left outer join
-(select o.person_id,case 
+(select o.person_id,case
  when value_coded = 4263 then "Undetectale"
  when value_coded = 4264 then "less than 20"
  when value_coded = 4265 then "Greater or equal to 20"
-else "other" 
+else "other"
 end AS VL_result
 from obs o
-inner join 
-		(select person_id,max(obs_datetime) maxdate 
+inner join
+		(select person_id,max(obs_datetime) maxdate
 		from obs a
 		where obs_datetime <= '#endDate#'
 		and concept_id = 4266 and a.voided=0
-		group by person_id 
-		)latest 
+		group by person_id
+		)latest
 	on latest.person_id = o.person_id
 	where concept_id = 4266
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = maxdate
 	)results
 ON txcurr.Id = results.person_id
 
 -- date results given to patient
 left outer join
 (select o.person_id,CAST(value_datetime AS DATE) as Patient_received_results
-from obs o 
-inner join 
-		(select person_id,max(obs_datetime) maxdate 
+from obs o
+inner join
+		(select person_id,max(obs_datetime) maxdate
 		from obs a
 		where obs_datetime <= '#endDate#'
 		and concept_id = 4274 and a.voided=0
-		group by person_id 
-		)latest 
+		group by person_id
+		)latest
 	on latest.person_id = o.person_id
 	where concept_id = 4274
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = maxdate
 	)patients
 ON txcurr.Id = patients.person_id
+
+-- TB Screening
+left outer join
+
+(select
+       o.person_id,
+       case
+           when value_coded = 3709 then "No Signs"
+           when value_coded = 1876 then "Suspected/Probable"
+           when value_coded = 3639 then "On TB Treatment"
+           else "other"
+       end AS TB_Status
+from obs o
+inner join
+		(select person_id,max(obs_datetime) maxdate
+		from obs a
+		where obs_datetime <= '#endDate#'
+		and concept_id = 4266 and a.voided=0
+		group by person_id
+		)latest
+	on latest.person_id = o.person_id
+	where concept_id = 3710
+	and  o.obs_datetime = maxdate
+	) tbresults
+ON txcurr.Id = tbresults.person_id
