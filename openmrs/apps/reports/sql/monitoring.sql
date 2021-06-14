@@ -1505,6 +1505,8 @@ left outer join
 -- intake regimen
 (
 select a.person_id,case 
+when a.value_coded = 4714 then '1a'
+when a.value_coded = 4715 then '1b'
 when a.value_coded = 2201 then '1c'
 when a.value_coded = 2202 then '4c'
 when a.value_coded = 2203 then '1d'
