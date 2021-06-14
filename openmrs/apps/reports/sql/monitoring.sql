@@ -1468,12 +1468,12 @@ inner join
 		(select person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
-		and concept_id = 3752
+		and concept_id = 3752 and voided=0
 		group by person_id 
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 3752
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = maxdate and voided=0
 	)encounter
 ON txcurr.Id = encounter.person_id
 
