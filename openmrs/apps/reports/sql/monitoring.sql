@@ -1651,6 +1651,7 @@ left outer join
            when value_coded = 3709 then "No Signs"
            when value_coded = 1876 then "Suspected/Probable"
            when value_coded = 3639 then "On TB Treatment"
+		   when value_coded = 1876 then "TB Presumptive Case"
            else "other"
        end AS TB_Status
 from obs o
