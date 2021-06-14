@@ -16,7 +16,6 @@ select distinct Patient_Identifier,
 				VL_result, 
 				Patient_received_results
 from
-
 (
 
 		(SELECT Id, patientIdentifier as "Patient_Identifier", patientName as "Patient_Name", Age, DOB, Gender, age_group, 'Initiated' as 'Program_Status'
@@ -1391,9 +1390,7 @@ from
 							)                                       
 		order by ARTCurrent_PrevMonths.patientName)
 
-) as txcurr left outer join
-
-(
+) as txcurr left outer join (
 		-- regimen
 		select a.person_id, 
 		case 
@@ -1561,7 +1558,7 @@ when a.value_coded = 4710 THEN "3h"
 else 'New Regimen' end as intake_regimen
 	from obs a,obs b
 	where a.person_id = b.person_id
-	and a.concept_id = 2250
+	and a.concept_id = 2250 and a.voided=0
 	and b.concept_id = 2397
 	and a.obs_datetime = b.obs_datetime
 	) intakes ON txcurr.Id = intakes.person_id
@@ -1570,7 +1567,7 @@ else 'New Regimen' end as intake_regimen
 	left outer join
 	(
 		select person_id,CAST(value_datetime AS DATE) as ART_Start
-		from obs where concept_id = 2249
+		from obs where concept_id = 2249 and voided=0
 	) as intake_date on txcurr.Id = intake_date.person_id
 
 -- date blood drawn
@@ -1579,7 +1576,7 @@ else 'New Regimen' end as intake_regimen
 	from obs o inner join 
 		(select person_id,max(obs_datetime) maxdate 
 		 from obs a
-		 where obs_datetime <= '#endDate#' and concept_id = 4267
+		 where obs_datetime <= '#endDate#' and concept_id = 4267 and a.voided=0
 		 group by person_id 
 		) as latest on latest.person_id = o.person_id
 	where concept_id = 4267 and  o.obs_datetime = maxdate	
@@ -1594,7 +1591,7 @@ inner join
 		(select person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
-		and concept_id = 4268
+		and concept_id = 4268 and a.voided=0
 		group by person_id 
 		)latest 
 	on latest.person_id = o.person_id
@@ -1616,7 +1613,7 @@ inner join
 		(select person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
-		and concept_id = 4266
+		and concept_id = 4266 and a.voided=0
 		group by person_id 
 		)latest 
 	on latest.person_id = o.person_id
@@ -1633,7 +1630,7 @@ inner join
 		(select person_id,max(obs_datetime) maxdate 
 		from obs a
 		where obs_datetime <= '#endDate#'
-		and concept_id = 4274
+		and concept_id = 4274 and a.voided=0
 		group by person_id 
 		)latest 
 	on latest.person_id = o.person_id
