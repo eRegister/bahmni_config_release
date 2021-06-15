@@ -152,7 +152,6 @@ ORDER BY Clients_Seen.patientName)
 
 UNION
 
-
 -- INCLUDE MISSED APPOINTMENTS WITHIN 28 DAYS ACCORDING TO THE NEW PEPFAR GUIDELINE
 (SELECT patientIdentifier , patientName , Age, Gender, age_group, 'MissedWithin28Days' AS 'Program_Status', sort_order
 FROM
@@ -321,7 +320,7 @@ UNION
 								   observed_age_group.sort_order AS sort_order
 
                 from obs o
-				-- CAME IN PREVIOUS 2 MONTHS AND WAS GIVEN (3, 4, 5, 6 MONHTS SUPPLY OF DRUGS)
+				-- CAME IN PREVIOUS 2 MONTHS AND WAS GIVEN (3, 4, 5, 6, 7+ MONHTS SUPPLY OF DRUGS)
                  INNER JOIN patient ON o.person_id = patient.patient_id 
 					 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
 					 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -2 MONTH)) 
@@ -362,7 +361,8 @@ UNION
 								   observed_age_group.sort_order AS sort_order
 
                 from obs o
-				-- CAME IN PREVIOUS 3 MONTHS AND WAS GIVEN (4, 5, 6 MONHTS SUPPLY OF DRUGS)
+				-- CAME IN PREVIOUS 3 MONTHS AND WAS GIVEN (4, 5, 6, 7+ MONHTS SUPPLY OF DRUGS)
+				-- 
                  INNER JOIN patient ON o.person_id = patient.patient_id 
 					 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
 					 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -3 MONTH)) 
@@ -403,7 +403,7 @@ UNION
 								   observed_age_group.sort_order AS sort_order
 
                 from obs o
-				-- CAME IN PREVIOUS 4 MONTHS AND WAS GIVEN (5, 6 MONHTS SUPPLY OF DRUGS)
+				-- CAME IN PREVIOUS 4 MONTHS AND WAS GIVEN (5, 6, 7+ MONHTS SUPPLY OF DRUGS)
                  INNER JOIN patient ON o.person_id = patient.patient_id 
 					 AND MONTH(o.obs_datetime) = MONTH(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
 					 AND YEAR(o.obs_datetime) = YEAR(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -4 MONTH)) 
@@ -432,7 +432,6 @@ UNION
 						and latest_visit > CAST(o.obs_datetime AS DATE) 
 						and latest_visit <= CAST('#endDate#' AS DATE)
 					))
-
 
 
 UNION

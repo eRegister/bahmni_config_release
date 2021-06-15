@@ -215,6 +215,14 @@
        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/monitoring.sql"
       }
      },
+	 
+ "temp_mmd_monitoring_tool": {
+     "name": "temp_mmd_monitoring_subquery",
+     "type": "MRSGeneric",
+     "config": {
+       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/temp_monitoring_mmd.sql"
+      }
+     },	 
 
  "detection_TB": {
      "name": "TB Case Detection ",
