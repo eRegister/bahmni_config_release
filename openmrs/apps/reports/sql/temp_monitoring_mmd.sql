@@ -1,4 +1,4 @@
-		SELECT Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, DOB, Gender, age_group, 
+		SELECT distinct Id, patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, DOB, Gender, age_group, 
 				CASE
 					WHEN datediff(latest_follow_up, max_observation) BETWEEN 56 AND 84 THEN 'MMD: 2 months'
 					WHEN datediff(latest_follow_up, max_observation) BETWEEN 84 AND 112 THEN 'MMD: 3 months'
@@ -33,7 +33,8 @@
 								 and oss.obs_datetime < cast('#endDate#' as DATE)
 								 group by p.person_id
 								 having datediff(CAST('#endDate#' AS DATE), latest_follow_up) < 0) as clients_with_overlap_follow_up
-						 )						 
+						 )
+
 						 INNER JOIN 								
 								(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up
 								 from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
@@ -51,8 +52,27 @@
 					   clients_fup_olap.max_observation in (
 							select oe.obs_datetime
 							from obs oe
-							where oe.concept_id = 3753 and oe.obs_datetime = o.obs_datetime		   
-					   ))  as seen_prev_mmd
-				   
-				   
-				   
+							where oe.concept_id = 3753 and oe.obs_datetime = o.obs_datetime	and oe.voided = 0	   
+					   )
+					   	-- Not seen in reporting period
+					 AND o.person_id not in (
+						select distinct os.person_id
+						from obs os
+						where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
+						AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+						AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+					 )
+					 -- Not initiated in reporting period
+					 AND o.person_id not in (
+						select distinct person_id
+						from obs 
+						where concept_id = 2249
+						AND MONTH(obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+						AND YEAR(obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+					 )
+					 AND o.person_id not in (
+								select person_id 
+								from person 
+								where death_date <= cast('#endDate#' as date)
+								and dead = 1
+					 ))  as seen_prev_mmd
