@@ -1,5 +1,21 @@
-select distinct Patient_Identifier,Patient_Name, Age,DOB, Gender, age_group,Program_Status,
-regimen_name,encounter_date,follow_up,drug_duration,intake_regimen,ART_Start,Blood_drawn,Results_received,VL_result,Patient_received_results, TB_Status
+select distinct Patient_Identifier,
+				Patient_Name, 
+				Age, 
+				DOB, 
+				Gender, 
+				age_group, 
+				Program_Status,
+				regimen_name,
+				encounter_date,
+				follow_up,
+				drug_duration,
+				intake_regimen,
+				ART_Start,
+				Blood_drawn,
+				Results_received,
+				VL_result,
+				Patient_received_results,
+				TB_Status
 from obs o
 left outer join
 
@@ -288,83 +304,82 @@ FROM (
 								   person.birthdate DOB,
                                    person.gender AS Gender,
                                    observed_age_group.name AS age_group
-
-        from obs o
-						-- Seen in Previous Months
-						 INNER JOIN patient ON o.person_id = patient.patient_id
-						 AND o.person_id in (
-						 -- begin
-						 select active_clients.person_id
-				from ( 
-					    select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.obs_group_id)), 20) as max_obs_group_id
-					    from obs oss
+from obs o
+		-- Seen in Previous Months
+		 INNER JOIN patient ON o.person_id = patient.patient_id
+		 AND o.person_id in (
+				 -- begin
+				 select active_clients.person_id
+				 from ( 
+						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) AS latest_follow_up, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.obs_group_id)), 20) as max_obs_group_id
+						from obs oss
 						where oss.concept_id = 3752 and oss.voided=0
 						and oss.obs_datetime < cast('#endDate#' as date)
 						 group by oss.person_id
-						) as active_clients		
-						-- Getting the obs_group_id corresponding with the latest follow_up	 
-				where latest_follow_up >= cast('#endDate#' as DATE)
-				and max_obs_group_id in (
+				 ) as active_clients		
+				 -- Getting the obs_group_id corresponding with the latest follow_up	 
+				 where latest_follow_up >= cast('#endDate#' as DATE)
+				 and max_obs_group_id in (
 					select obs_id from obs where obs_id = max_obs_group_id and concept_id = 3753
-				)
-				
-		and active_clients.person_id not in (
-							select distinct os.person_id
-							from obs os
-							where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
-							AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
-							AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-							)
+				 )
 						
-		and active_clients.person_id not in (
-							select distinct os.person_id
-							from obs os
-							where concept_id = 2249
-							AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
-							AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-							)
+				and active_clients.person_id not in (
+									select distinct os.person_id
+									from obs os
+									where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
+									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+									AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+									)
+								
+				and active_clients.person_id not in (
+									select distinct os.person_id
+									from obs os
+									where concept_id = 2249
+									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+									AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+									)
 
-		and active_clients.person_id not in (
-							select distinct(o.person_id)
-							from obs o
-							where o.person_id in (
-					
-									select distinct person_id
-											from
-											(
-												select os.person_id, CAST(max(os.value_datetime) AS DATE) as latest_transferout
+				and active_clients.person_id not in (
+									select distinct(o.person_id)
+									from obs o
+									where o.person_id in (
+							
+											select distinct person_id
+													from
+													(
+														select os.person_id, CAST(max(os.value_datetime) AS DATE) as latest_transferout
+														from obs os
+														where os.concept_id=2266
+														group by os.person_id
+														having latest_transferout <= CAST('#endDate#' AS DATE)
+													) as TOUTS
+												
+													 where TOUTS.person_id not in
+														 (
+															 select oss.person_id
+															 from obs oss
+															 where concept_id = 3843
+															 and CAST(oss.obs_datetime AS DATE) > latest_transferout
+															 and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
+														 )
+								   
+												)
+									and o.person_id not in(
+												select distinct os.person_id
 												from obs os
-												where os.concept_id=2266
-												group by os.person_id
-												having latest_transferout <= CAST('#endDate#' AS DATE)
-											) as TOUTS
-										
-											 where TOUTS.person_id not in
-												 (
-													 select oss.person_id
-													 from obs oss
-													 where concept_id = 3843
-													 and CAST(oss.obs_datetime AS DATE) > latest_transferout
-													 and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-												 )
-						   
-										)
-							and o.person_id not in(
-										select distinct os.person_id
-										from obs os
-										where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
-										AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
-										AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-							)
-										)
-			
+												where (os.concept_id = 3843 AND os.value_coded = 3841 OR os.value_coded = 3842)
+												AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+												AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+									)
+												)
+					
 
-		and active_clients.person_id not in (
-									select person_id 
-									from person 
-									where death_date <= cast('#endDate#' as date)
-									and dead = 1
-						 )
+									and active_clients.person_id not in (
+											select person_id 
+											from person 
+											where death_date <= cast('#endDate#' as date)
+											and dead = 1
+								 )
 						 )
 						 -- end
 						 
@@ -456,52 +471,58 @@ ON previous.Id = regimen.person_id
 
 left outer JOIN
 -- encounter date
-(select o.person_id,CAST(maxdate AS DATE) as encounter_date,CAST(value_datetime AS DATE) as follow_up
+(select o.person_id, CAST(max_observation AS DATE) as encounter_date, CAST(latest_follow_up AS DATE) as follow_up
 from obs o 
 inner join 
-		(select person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '2021-02-21'
-		and concept_id = 3752
-		group by person_id 
+		(select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_follow_up
+		 from obs oss
+		 where oss.concept_id = 3752 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 3752
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = max_observation	
 	)encounter
 ON previous.Id = encounter.person_id
 
 left outer JOIN
--- drug supply
-(select o.person_id,
-case 
- when value_coded = 4243 then "2 weeks"
- when value_coded = 4175 then "1 Month"
- when value_coded = 4176 then "2 Months"
- when value_coded = 4177 then "3 Months"
- when value_coded = 4245 then "4 Months"
- when value_coded = 4246 then "5 Months"
- when value_coded = 4247 then "6 Months"
-else "other" 
-end AS drug_duration,maxdate
-from obs o
-inner join 
-		(select a.person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4174
-		group by a.person_id 
-		)latest 
-		on latest.person_id = o.person_id
-where concept_id = 4174
-and  o.obs_datetime = maxdate
-) duration
-ON previous.Id = duration.person_id
+
+	(SELECT person_id, 
+			CASE
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 10 AND 21 THEN '2 weeks'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 28 AND 56 THEN '1 month'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 56 AND 84 THEN '2 months'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 84 AND 112 THEN '3 months'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 112 AND 140 THEN '4 months'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 140 AND 168 THEN '5 months'
+				WHEN datediff(latest_follow_up, max_observation) BETWEEN 168 AND 196 THEN '6 months'
+				WHEN datediff(latest_follow_up, max_observation)   >=   196   THEN '7+ months'
+				ELSE 'Other supply' 
+			END as drug_duration,
+			max_observation
+	 FROM (
+			select oss.person_id, MAX(oss.obs_datetime) as max_observation, 
+				   SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_follow_up,
+				   SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.obs_group_id)), 20) as max_obs_group_id
+			from obs oss
+			where oss.concept_id = 3752 and oss.voided=0
+			and oss.obs_datetime < cast('#endDate#' as date)
+			group by oss.person_id
+	 ) as latest_follow_up_obs
+	 -- Getting the obs_group_id corresponding with the latest follow_up	 
+	 where latest_follow_up >= cast('#endDate#' as DATE)
+		   and max_obs_group_id in (
+			  select obs_id from obs where obs_id = max_obs_group_id and concept_id = 3753
+		   )
+	 ) duration ON previous.Id = duration.person_id
 
 left outer JOIN
 -- intake regimen
 (
-select a.person_id,case 
+select a.person_id,case
+when a.value_coded = 4714 then '1a'
+when a.value_coded = 4715 then '1b'
 when a.value_coded = 2201 then '1c'
 when a.value_coded = 2202 then '4c'
 when a.value_coded = 2203 then '1d'
@@ -571,57 +592,63 @@ else 'New Regimen' end as intake_regimen
 
 -- date blood drawn
 	left outer join
-	(select o.person_id,CAST(value_datetime AS DATE) as Blood_drawn
+	(select o.person_id,CAST(latest_blood_draw AS DATE) as Blood_drawn
 	from obs o 
 	inner join 
-		(select person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4267
-		group by person_id 
+		(
+		 select oss.person_id, MAX(oss.obs_datetime) as max_observation,
+		 SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_blood_draw
+		 from obs oss
+		 where oss.concept_id = 4267 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 4267
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = max_observation	
 	)blood
 ON previous.Id = blood.person_id
 
 -- date results received
 left outer join
-(select o.person_id,CAST(value_datetime AS DATE) as Results_received
+(select o.person_id,CAST(latest_results_date AS DATE) as Results_received
 from obs o 
 inner join 
-		(select person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4268
-		group by person_id 
+		(
+		 select oss.person_id, MAX(oss.obs_datetime) as max_observation,
+		 SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_results_date
+		 from obs oss
+		 where oss.concept_id = 4268 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 4268
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = max_observation	
 	)results_rece
 ON previous.Id = results_rece.person_id
 
 -- results
 left outer join
 (select o.person_id,case 
- when value_coded = 4263 then "Undetectale"
- when value_coded = 4264 then "less than 20"
- when value_coded = 4265 then "Greater or equal to 20"
+ when o.value_coded = 4263 then "Undetectale"
+ when o.value_coded = 4264 then "less than 20"
+ when o.value_coded = 4265 then "Greater or equal to 20"
 else "other" 
 end AS VL_result
 from obs o
 inner join 
-		(select person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4266
-		group by person_id 
+		(
+		 select oss.person_id, MAX(oss.obs_datetime) as max_observation,
+		 SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_results
+		 from obs oss
+		 where oss.concept_id = 4266 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 4266
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = max_observation	
 	)results
 ON previous.Id = results.person_id
 
@@ -630,15 +657,17 @@ left outer join
 (select o.person_id,CAST(value_datetime AS DATE) as Patient_received_results
 from obs o 
 inner join 
-		(select person_id,max(obs_datetime) maxdate 
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4274
-		group by person_id 
+		(
+		 select oss.person_id, MAX(oss.obs_datetime) as max_observation,
+		 SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as latest_results_received_date
+		 from obs oss
+		 where oss.concept_id = 4274 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest 
 	on latest.person_id = o.person_id
 	where concept_id = 4274
-	and  o.obs_datetime = maxdate	
+	and  o.obs_datetime = max_observation	
 	)patients
 ON previous.Id = patients.person_id
 
@@ -656,14 +685,16 @@ left outer join
        end AS TB_Status
 from obs o
 inner join
-		(select person_id,max(obs_datetime) maxdate
-		from obs a
-		where obs_datetime <= '#endDate#'
-		and concept_id = 4266 and a.voided=0
-		group by person_id
+		(
+		 select oss.person_id, MAX(oss.obs_datetime) as max_observation,
+		 SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_datetime)), 20) as tb_screening_status
+		 from obs oss
+		 where oss.concept_id = 3710 and oss.voided=0
+		 and oss.obs_datetime < cast('#endDate#' as date)
+		 group by oss.person_id
 		)latest
 	on latest.person_id = o.person_id
 	where concept_id = 3710
-	and  o.obs_datetime = maxdate
+	and  o.obs_datetime = max_observation
 	) tbresults
 ON previous.Id = tbresults.person_id
