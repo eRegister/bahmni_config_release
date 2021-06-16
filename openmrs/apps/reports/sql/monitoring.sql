@@ -576,8 +576,8 @@ when a.value_coded = 4710 THEN "3h"
 else 'New Regimen' end as intake_regimen
 	from obs a,obs b
 	where a.person_id = b.person_id
-	and a.concept_id = 2250
-	and b.concept_id = 2397
+	and a.concept_id = 2250 and a.voided = 0
+	and b.concept_id = 2397 and b.voided = 0
 	and a.obs_datetime = b.obs_datetime
 	) intakes
 	ON previous.Id = intakes.person_id
