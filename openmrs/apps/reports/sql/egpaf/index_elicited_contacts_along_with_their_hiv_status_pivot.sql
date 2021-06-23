@@ -6,9 +6,9 @@ SELECT distinct INDEX_TOTALS_COLS_ROWS.Totals
             ,INDEX_TOTALS_COLS_ROWS.Gender
 
 		    , INDEX_TOTALS_COLS_ROWS.Prior_Positive
-	    	, INDEX_TOTALS_COLS_ROWS.Prior_Negative 
+	    	, INDEX_TOTALS_COLS_ROWS.Prior_Negative  
 	    	, INDEX_TOTALS_COLS_ROWS.Not_Applicable 
-	    	, INDEX_TOTALS_COLS_ROWS.Unknown
+	    	,INDEX_TOTALS_COLS_ROWS.Unknown 
 
 	    	, INDEX_TOTALS_COLS_ROWS.New_Positive 
 	    	, INDEX_TOTALS_COLS_ROWS.New_Negative 
@@ -20,8 +20,7 @@ SELECT distinct INDEX_TOTALS_COLS_ROWS.Totals
 	    	, INDEX_TOTALS_COLS_ROWS.Declined  
 
 			, INDEX_TOTALS_COLS_ROWS.Total
-
-FROM (
+FROM(
 
 			(SELECT  INDEX_STATUS_DRVD_ROWS.age_group AS 'Totals'
                         ,INDEX_STATUS_DRVD_ROWS.Gender				

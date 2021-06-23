@@ -1,7 +1,6 @@
  
 SELECT Client_Name as "Client Name", contact_Name as "Contact Name", Contact_age as "Contact Age", Gender as "Contact Gender"
-FROM (
-     
+FROM (     
     -- List the elicited contact name and age for the Index Contact               
 SELECT Id,concat(given_name ,' ',family_name) as Client_Name, concat(firstname,' ',surname) as contact_Name,Contact_age,c_gender.contact_gender as Gender from
 (
@@ -101,9 +100,8 @@ inner join
 
 ON Contact_age.obs_group_id = c_gender.gender_obs_group_id
 group by obs_group_id 
-) as INDEX_CLIENTS_CONTACTS
+) as INDEX_CLIENTS_CONTACTS 
 group by Client_Name,Contact_age,Gender
-
 
 
 

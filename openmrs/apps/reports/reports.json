@@ -491,7 +491,7 @@
   },
   "IndexContactsElicitedWithHIVStatus_pivot": {
     "name": "Index Contacts Elicited with HIV Status (Pivot)",
-    "type": "MRSGeneric",
+    "type": "MRSGeneric", 
     "config": {
       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/index_elicited_contacts_along_with_their_hiv_status_pivot.sql"
     }

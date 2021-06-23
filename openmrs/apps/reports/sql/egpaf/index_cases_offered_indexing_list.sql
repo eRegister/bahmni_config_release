@@ -10,7 +10,7 @@ FROM
 											   observed_age_group.name AS age_group,
 											  concat(o.value_numeric,' ',' m/l') AS vl_result,
 											   observed_age_group.sort_order AS sort_order
-
+ 
 						from obs o
 								-- CLIENTS WITH A VIRAL LOAD RESULT DOCUMENTED WITHIN THE LAST 12 MONTHS 
 								INNER JOIN patient ON o.person_id = patient.patient_id

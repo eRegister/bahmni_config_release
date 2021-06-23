@@ -41,8 +41,8 @@ FROM
 												from obs oss inner join person p on oss.person_id=p.person_id and oss.concept_id = 4280 and oss.voided=0 and oss.value_coded = 4281
 												and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 												group by p.person_id
-										) 
-										 
+										)  
+										  
 								)
 								AND o.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
 								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -58,7 +58,7 @@ FROM
 UNION
 
 (SELECT patientIdentifier AS "Patient Identifier", patientName AS "Patient Name",  Age, Gender, age_group, vl_result AS 'Patient Health Status','High VL Targeted' as 'Client Enrollment Status', sort_order
-FROM  
+ FROM  
 		 (select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,

@@ -15,14 +15,13 @@ FROM (
 						,IF(CLIENTS_OFFERED_INDEXING_ROWS.Id IS NULL, 0, SUM(IF(CLIENTS_OFFERED_INDEXING_ROWS.Indexing = 'Denied' AND CLIENTS_OFFERED_INDEXING_ROWS.Gender = 'F', 1, 0))) AS Females_Declined 
 					
 						,IF(CLIENTS_OFFERED_INDEXING_ROWS.Id IS NULL, 0,  SUM(1)) as 'Total' 
-						
 						, CLIENTS_OFFERED_INDEXING_ROWS.sort_order
 			FROM (  
 				
 				
--- ART CLIENTS WITH HVL AND ACCEPTED INDEXING WITH MONITORING TYPE ROUTINE
+--  ART CLIENTS WITH HVL AND ACCEPTED INDEXING WITH MONITORING TYPE ROUTINE
 (SELECT Id, patientIdentifier AS 'Patient Identifier', patientName AS 'Patient Name', Age, Gender, age_group, vl_result AS 'Patient_Health_Status','HVL_Routine' as 'Client_Program','Accepted' AS 'Indexing', sort_order
-FROM  
+FROM 
 		 
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,

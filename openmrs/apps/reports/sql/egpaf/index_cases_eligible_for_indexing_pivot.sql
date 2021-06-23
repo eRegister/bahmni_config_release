@@ -1,4 +1,4 @@
-SELECT TOTALS_COLS_ROWS.AgeGroup 
+SELECT  TOTALS_COLS_ROWS.AgeGroup 
 		, TOTALS_COLS_ROWS.Detectable_VL_Males 
 		, TOTALS_COLS_ROWS.Detectable_VL_Females 
 		, TOTALS_COLS_ROWS.Linked_Males 
@@ -9,7 +9,7 @@ SELECT TOTALS_COLS_ROWS.AgeGroup
 		, TOTALS_COLS_ROWS.Reffered_Females 
         , TOTALS_COLS_ROWS.Total
 
-FROM (
+FROM( 
  
 (SELECT INDEX_STATUS_DRVD_ROWS.age_group AS 'AgeGroup' 
 						, IF(INDEX_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(INDEX_STATUS_DRVD_ROWS.Patient_Health_Status > 20 AND INDEX_STATUS_DRVD_ROWS.gender = 'M', 1, 0))) AS Detectable_VL_Males 
@@ -22,7 +22,7 @@ FROM (
 						, IF(INDEX_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(INDEX_STATUS_DRVD_ROWS.Patient_Health_Status = 'Referred' AND INDEX_STATUS_DRVD_ROWS.gender = 'F', 1, 0))) AS Reffered_Females					
 						, IF(INDEX_STATUS_DRVD_ROWS.Id IS NULL, 0,  SUM(1)) as 'Total' 
 						, INDEX_STATUS_DRVD_ROWS.sort_order
-			FROM (   
+			FROM(   
 				
 
 -- CLIENTS WITH DETECTABLE VL

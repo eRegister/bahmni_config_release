@@ -130,7 +130,7 @@ FROM (
 						, IF(INDEX_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(INDEX_STATUS_DRVD_COLS.Gender = 'F' AND INDEX_STATUS_DRVD_COLS.Contact_age < 15, 1, 0))) AS Females_below_15					
 						, IF(INDEX_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF( ((INDEX_STATUS_DRVD_COLS.Gender = 'M') || (INDEX_STATUS_DRVD_COLS.Gender = 'F')), 1, 0))) as 'Total'
 						, 99 AS sort_order
-			FROM ( 
+			FROM (
                         -- List the elicited contact name,age,gender for the Index Client
                 SELECT Id, Client_Name, contact_Name, Contact_age, Gender, 1 as sort_order
                 FROM (                        
@@ -140,7 +140,7 @@ FROM (
                         -- List the elicited contact firstname and surname for Index Client
                         SELECT Id, given_name , family_name, concept_id, firstname, surname,age_set.Contact_age, obs_group_id from
                         (
-                             -- Get elicited contact first name for the Index Client
+                            -- Get elicited contact first name for the Index Client
                             SELECT Id, first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
                                 select obs_id, o.person_id as Id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided 
@@ -156,8 +156,7 @@ FROM (
                                     where concept_id in (4761)
                                 group by obs_group_id
                             ) as first_name_set 
-
-                            inner join 
+                            inner join  
                             ( 
                                 -- Get elicited contact surname for the Index Client
                                 select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided 
@@ -239,4 +238,3 @@ FROM (
 		
 	) AS INDEX_TOTALS_COLS_ROWS
 ORDER BY INDEX_TOTALS_COLS_ROWS.sort_order
-

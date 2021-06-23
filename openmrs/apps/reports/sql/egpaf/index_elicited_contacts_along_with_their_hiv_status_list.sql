@@ -196,18 +196,18 @@ union
                                                 and oss.voided=0
             								    and oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                                     )                    
-                                    and o.concept_id in(4770) 
+                                    and o.concept_id in(4770)  
                                     group by obs_group_id 
                                 ) as c_gender 
                     on contact_ages.obs_group_id = c_gender.gender_obs_group_id
-
+           
             ) as contact_status
 
                     inner join
                         (
                             -- Contact newly tested for HIV
                             select obs_id, o.person_id, 
-                                                                case 
+                                         case 
                                             when value_coded = 1738 then 'New_Positive'
                                             when value_coded = 1016 then 'New_Negative'
                                             when value_coded = 4220 then 'New_Indeterminate'  
