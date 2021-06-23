@@ -391,14 +391,30 @@
        }
       },
  
-   "hts_tst_postANC1_pivot": {
-       "name": "HTS TST PITC POST ANC1 (Pivot)",
-       "type": "MRSGeneric",
-       "config": {
-         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/HTS_TST_PostANC_pivot.sql"
-       }
-      },
- 
+      "hts_tst_postANC1_pivot": {
+          "name": "HTS TST PITC POST ANC1 (Pivot)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/HTS_TST_PostANC_pivot.sql"
+          }
+         },
+
+        "hts_tst_self_test_list": {
+            "name": "HTS Self Testing ( List )",
+            "type": "MRSGeneric",
+            "config": {
+              "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_list.sql"
+            }
+          },
+
+          "hts_tst_self_test_pivot": {
+            "name": "HTS Self Testing ( Pivot )",
+              "type": "MRSGeneric",
+              "config": {
+                "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/self_test_pivot.sql"
+              }
+              },
+
    "pmtct_stat_denominator_list": {
        "name": "PMTCT STAT DINOMINATOR (List)",
        "type": "MRSGeneric",
