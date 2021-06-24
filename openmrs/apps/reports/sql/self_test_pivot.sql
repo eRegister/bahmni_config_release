@@ -1,18 +1,22 @@
 SELECT HTS_TOTALS_COLS_ROWS.AgeGroup
-		, HTS_TOTALS_COLS_ROWS.Gender
-		, HTS_TOTALS_COLS_ROWS.Positives
-		, HTS_TOTALS_COLS_ROWS.Negatives
+		, HTS_TOTALS_COLS_ROWS.Negative_Males
+		, HTS_TOTALS_COLS_ROWS.Negative_Females
+		, HTS_TOTALS_COLS_ROWS.Positive_Males
+		, HTS_TOTALS_COLS_ROWS.Positive_Females
 		, HTS_TOTALS_COLS_ROWS.Total
 
 FROM (
 
 			(SELECT HTS_STATUS_DRVD_ROWS.age_group AS 'AgeGroup'
-					, HTS_STATUS_DRVD_ROWS.Gender
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'Self-test' 
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive', 1, 0))) AS Positives
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Gender = 'M', 1, 0))) AS Negative_Males
 						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'Self-test'			
-							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative', 1, 0))) AS Negatives
-						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'Self-test', 1, 0))) as 'Total'
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Gender = 'F', 1, 0))) AS Negative_Females
+							, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'Self-test'			
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_ROWS.Gender = 'M', 1, 0))) AS Positive_Males
+							, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_ROWS.HIV_Testing_Initiation = 'Self-test'			
+							AND HTS_STATUS_DRVD_ROWS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_ROWS.Gender = 'F', 1, 0))) AS Positive_Females
+						, IF(HTS_STATUS_DRVD_ROWS.Id IS NULL, 0, SUM(1)) as 'Total'
 						, HTS_STATUS_DRVD_ROWS.sort_order
 			FROM (SELECT Id,Patient_Identifier , Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation  , HIV_Status,sort_order
 FROM (
@@ -22,7 +26,7 @@ FROM (
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 1738 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
@@ -32,14 +36,14 @@ FROM (
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1738
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -47,9 +51,10 @@ FROM (
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-								  CAST('2021-01-31' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+						   WHERE observed_age_group.report_group_name = 'Modified_Ages' 
+						   AND observed_age_group.id in (13,14,15,16,17,18,19,20)
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
@@ -60,7 +65,7 @@ UNION
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 1016 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
@@ -70,14 +75,14 @@ UNION
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1016
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -85,9 +90,10 @@ UNION
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-								  CAST('2021-01-31' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+						    AND observed_age_group.id in (13,14,15,16,17,18,19,20)
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
@@ -98,7 +104,7 @@ UNION
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 2148 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender,
 											   observed_age_group.name AS age_group,
@@ -108,14 +114,14 @@ UNION
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 2148
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -123,9 +129,10 @@ UNION
 								 INNER JOIN person_name ON person.person_id = person_name.person_id
 								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
 								 INNER JOIN reporting_age_group AS observed_age_group ON
-								  CAST('2021-01-31' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 						   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+						    AND observed_age_group.id in (13,14,15,16,17,18,19,20)
 								 ) AS HTSClients_HIV_Status
 		ORDER BY HTSClients_HIV_Status.HIV_Status, HTSClients_HIV_Status.Age)
 		
@@ -137,19 +144,23 @@ ORDER BY HTS_Status_Detailed.HIV_Testing_Initiation
 
 	) AS HTS_STATUS_DRVD_ROWS
 
-			GROUP BY HTS_STATUS_DRVD_ROWS.age_group, HTS_STATUS_DRVD_ROWS.Gender
+			GROUP BY HTS_STATUS_DRVD_ROWS.age_group
 			ORDER BY HTS_STATUS_DRVD_ROWS.sort_order)
+
 			
 			
 	UNION ALL
 
 			(SELECT 'Total' AS 'AgeGroup'
-					, 'All' AS 'Gender'
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'Self-test' 
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive', 1, 0))) AS Positives
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Gender = 'M', 1, 0))) AS Negative_Males
 						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'Self-test'			
-							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' , 1, 0))) AS Negatives
-						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'Self-test', 1, 0))) as 'Total'
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Negative' AND HTS_STATUS_DRVD_COLS.Gender = 'F' , 1, 0))) AS Negative_Females
+							, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'Self-test' 
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Gender = 'M', 1, 0))) AS Positive_Males
+							, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(IF(HTS_STATUS_DRVD_COLS.HIV_Testing_Initiation = 'Self-test' 
+							AND HTS_STATUS_DRVD_COLS.HIV_Status = 'Positive' AND HTS_STATUS_DRVD_COLS.Gender = 'F', 1, 0))) AS Positive_Females
+						, IF(HTS_STATUS_DRVD_COLS.Id IS NULL, 0, SUM(1)) as 'Total'
 						, 99 AS sort_order
 			FROM (
 				SELECT Id,Patient_Identifier , Patient_Name, Age, Gender, HIV_Testing_Initiation  , HIV_Status
@@ -160,7 +171,7 @@ FROM (
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 1738 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender 
 						from obs o
@@ -168,14 +179,14 @@ FROM (
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1738
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -193,7 +204,7 @@ UNION
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 1016 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender
 						from obs o
@@ -201,14 +212,14 @@ UNION
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 1016
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 
@@ -226,7 +237,7 @@ UNION
 						(select distinct patient.patient_id AS Id,
 											   patient_identifier.identifier AS patientIdentifier,
 											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('2021-01-31' AS DATE), person.birthdate)/365) AS Age,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
 											   (select name from concept_name cn where cn.concept_id = 2148 and concept_name_type='FULLY_SPECIFIED') AS HIV_Status,
 											   person.gender AS Gender
 						from obs o
@@ -234,14 +245,14 @@ UNION
 								 INNER JOIN patient ON o.person_id = patient.patient_id 
 								 AND o.concept_id = 4845 and value_coded = 4822
 								 AND patient.voided = 0 AND o.voided = 0
-								 AND o.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+								 AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								 
 								 -- HAS HIV POSITIVE RESULTS 
 								 AND o.person_id in (
 									select distinct os.person_id
 									from obs os
 									where os.concept_id = 4844 and os.value_coded = 2148
-									AND os.obs_datetime BETWEEN CAST('2020-10-01' AS DATE) AND CAST('2021-01-31' AS DATE)
+									AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 									AND patient.voided = 0 AND o.voided = 0
 								 )
 								 

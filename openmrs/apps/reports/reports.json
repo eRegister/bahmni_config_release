@@ -411,9 +411,17 @@
             "name": "HTS Self Testing ( Pivot )",
               "type": "MRSGeneric",
               "config": {
-                "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/self_test_pivot.sql"
+                "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_pivot.sql"
               }
               },
+
+              "hts_final_status_list": {
+                "name": "HTS Final Status ( List )",
+                  "type": "MRSGeneric",
+                  "config": {
+                    "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_final_status_list.sql"
+                  }
+                  },
 
    "pmtct_stat_denominator_list": {
        "name": "PMTCT STAT DINOMINATOR (List)",
