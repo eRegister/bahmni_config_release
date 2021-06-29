@@ -84,6 +84,39 @@ FROM
 
 UNION
 
+(SELECT Id,patientIdentifier AS 'Patient Identifier', patientName AS 'Patient Name', Age, Gender,age_group, vl_result AS 'Patient_Health_Status','ART Program' as 'Client_Program',Indexing, sort_order
+FROM   
+		 
+						(select distinct patient.patient_id AS Id,
+											   patient_identifier.identifier AS patientIdentifier,
+											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+											   person.gender AS Gender,
+											   observed_age_group.name AS age_group,
+											   'ART Patient' AS vl_result,
+												observed_age_group.sort_order AS sort_order,
+												case 
+												when o.value_coded = 2126 then 'Accepted'
+												when o.value_coded = 2147 then 'Declined' Else 'Denied' END AS 'Indexing'
+ 
+						from obs o
+								-- ART CLIENTS WHO ACCEPTED/DECLINED INDEXING REGARDLESS OF THEIR VL STATUS 
+								INNER JOIN patient ON o.person_id = patient.patient_id
+								AND o.concept_id = 4759
+								AND o.value_coded in (2126,2147)
+								and o.voided=0
+								AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
+
+								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+								INNER JOIN person_name ON person.person_id = person_name.person_id
+								INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type in (3,5) AND patient_identifier.preferred = 1
+
+								INNER JOIN reporting_age_group AS observed_age_group ON
+									CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+									AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+						    WHERE observed_age_group.report_group_name = 'Modified_Ages') AS INDEX_CLIENTS
+		ORDER BY INDEX_CLIENTS.Age)  
+UNION
 -- ART CLIENTS WITH HVL AND DENIED INDEXING WITH MONITORING TYPE ROUTINE
 (SELECT Id, patientIdentifier AS 'Patient Identifier', patientName AS 'Patient Name', Age, Gender, age_group, vl_result AS 'Patient_Health_Status','HVL_Routine' as 'Client_Program','Denied' AS 'Indexing', sort_order
 FROM  
@@ -696,6 +729,35 @@ FROM
 								
 								) AS ACCEPTED_INDEXING_COLS
 							)  
+
+UNION
+
+(SELECT Id,patientIdentifier AS 'Patient Identifier', patientName AS 'Patient Name', Age, Gender, vl_result AS 'Patient_Health_Status','ART Program' as 'Client_Program',Indexing
+FROM  
+		 
+						(select distinct patient.patient_id AS Id,
+											   patient_identifier.identifier AS patientIdentifier,
+											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+											   person.gender AS Gender,
+											   'ART Patient' AS vl_result, 
+												case 
+												when o.value_coded = 2126 then 'Accepted'
+												when o.value_coded = 2147 then 'Denied' Else 'Denied' END AS 'Indexing'
+ 
+						from obs o
+								-- ART CLIENTS WHO ACCEPTED/DECLINED INDEXING REGARDLESS OF THEIR VL STATUS 
+								INNER JOIN patient ON o.person_id = patient.patient_id
+								AND o.concept_id = 4759
+								AND o.value_coded in (2126,2147)
+								and o.voided=0
+								AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
+
+								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+								INNER JOIN person_name ON person.person_id = person_name.person_id
+								INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type in (3,5) AND patient_identifier.preferred = 1
+) AS INDEX_CLIENTS
+		ORDER BY INDEX_CLIENTS.Age)  
 
 UNION
 
