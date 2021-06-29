@@ -16,10 +16,13 @@ from
                                     -- Contact Firstname and Surname
                                     select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided 
                                      from obs o
-                                        inner join person_name pn on o.person_id=pn.person_id 
-                                        and o.voided=0
-								        and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)								 
-
+                                        INNER JOIN patient ON o.person_id = patient.patient_id 
+                                        INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                        INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                        INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+            
+                                    AND o.voided=0   
+                                    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
                                         where concept_id in (4761)
                                     group by obs_group_id) as first_name_set 
 
@@ -27,9 +30,13 @@ from
                                 ( 
                                     select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided 
                                      from obs o
-                                        inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                        INNER JOIN patient ON o.person_id = patient.patient_id 
+                                        INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                        INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                        INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+            
+                                    AND o.voided=0   
+                                    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)								 
 								 
                                     where concept_id in (4762) 
                                     group by obs_group_id
@@ -42,7 +49,13 @@ from
                                     -- Contact Age
                                     select obs_id, o.person_id, value_numeric as contact_age, o.obs_group_id as age_obs_group_id, o.voided  
                                     from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id and o.voided=0
+                                        INNER JOIN patient ON o.person_id = patient.patient_id 
+                                        INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                        INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                        INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
                                     and o.obs_group_id in (
                                                 select oss.obs_group_id
                                                 from obs oss inner join person p on oss.person_id=p.person_id 
@@ -63,11 +76,14 @@ from
                                         -- Contact gender
                                         select obs_id, o.person_id, IF(value_coded = 1088,'F','M') as contact_gender, o.obs_group_id as gender_obs_group_id, o.voided  
                                         from obs o
-                                        inner join person_name pn on o.person_id=pn.person_id 
-                                        and o.voided=0
+                                                INNER JOIN patient ON o.person_id = patient.patient_id 
+                                            INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                            INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)										 	
                                         and o.value_coded in (1088,1087)
-								        and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
-
                                         and o.obs_group_id in (
                                                     select oss.obs_group_id
                                                     from obs oss inner join person p on oss.person_id=p.person_id
@@ -95,11 +111,15 @@ from
                                                 else 'Unknown' end as Contact_HIV_Status,
                                                 o.obs_group_id as status_obs_group_id 
                                 from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
-                                    and o.value_coded in (1738,1016,1975,1739) 
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-								 
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
+								    and o.value_coded in (1738,1016,1975,1739) 
+
                                     and o.obs_group_id in (
                                             select oss.obs_group_id
                                             from obs oss inner join person p on oss.person_id=p.person_id 
@@ -134,21 +154,30 @@ union
                             -- Contact Firstname and surname
                             SELECT first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
-                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided
+                                from obs o
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
 								 
                                     where concept_id in (4761)
                                 group by obs_group_id) as first_name_set 
 
                             inner join 
                             (
-                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                inner join person_name pn on o.person_id=pn.person_id
-                                and o.voided=0
-								and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
-
+                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided 
+                                from obs o
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
                                 where concept_id in (4762) 
                                 group by obs_group_id
                             ) as surname_set 
@@ -160,10 +189,13 @@ union
                                 -- Contact age
                                 select obs_id, o.person_id, value_numeric as contact_age, o.obs_group_id as age_obs_group_id, o.voided  
                                 from obs o
-                                inner join person_name pn on o.person_id=pn.person_id 
-                                and o.voided=0
-							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-
+                                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
                                 and o.obs_group_id in (
                                             select oss.obs_group_id
                                             from obs oss inner join person p on oss.person_id=p.person_id 
@@ -184,11 +216,14 @@ union
                                     -- Contact gender
                                     select obs_id, o.person_id, IF(value_coded = 1088,'F','M') as contact_gender, o.obs_group_id as gender_obs_group_id, o.voided  
                                     from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
+                                           INNER JOIN patient ON o.person_id = patient.patient_id 
+                                            INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                            INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+                
+                                        AND o.voided=0   
+                                        AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
                                     and o.value_coded in (1088,1087)
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-
                                     and o.obs_group_id in (
                                                 select oss.obs_group_id
                                                 from obs oss inner join person p on oss.person_id=p.person_id 
@@ -214,11 +249,15 @@ union
                                             else 'Not_Tested' end as Contact_HIV_Status,
                                             o.obs_group_id as status_obs_group_id 
                             from obs o
-                                inner join person_name pn on o.person_id=pn.person_id 
-                                and o.voided=0
-                                and o.value_coded in (1738,1016,4220)
-							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                 INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
 
+                                and o.value_coded in (1738,1016,4220)
                                 and o.obs_group_id in (
                                         select oss.obs_group_id
                                         from obs oss inner join person p on oss.person_id=p.person_id 
@@ -253,20 +292,30 @@ union
                             -- Contact Firstname and surname
                             SELECT first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
-                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided
+                                from obs o
+                                     INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)	
 
                                     where concept_id in (4761)
                                 group by obs_group_id) as first_name_set 
 
                             inner join 
                             (
-                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                inner join person_name pn on o.person_id=pn.person_id 
-                                and o.voided=0
-							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  
+                                from obs o
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)										 
 
                                 where concept_id in (4762) 
                                 group by obs_group_id
@@ -279,9 +328,13 @@ union
                                 -- Contact Age
                                 select obs_id, o.person_id, value_numeric as contact_age, o.obs_group_id as age_obs_group_id, o.voided  
                                 from obs o
-                                inner join person_name pn on o.person_id=pn.person_id 
-                                and o.voided=0
-								and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                        INNER JOIN patient ON o.person_id = patient.patient_id 
+                                        INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                        INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                        INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+            
+                                    AND o.voided=0   
+                                    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)									 
                                 
                                 and o.obs_group_id in (
                                             select oss.obs_group_id
@@ -303,10 +356,15 @@ union
                                 ( -- Contact gender
                                     select obs_id, o.person_id, IF(value_coded = 1088,'F','M') as contact_gender, o.obs_group_id as gender_obs_group_id, o.voided  
                                     from obs o
-                                    inner join person_name pn on o.person_id=pn.person_id 
-                                    and o.voided=0
+                                        INNER JOIN patient ON o.person_id = patient.patient_id 
+                                        INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                        INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                        INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+            
+                                    AND o.voided=0   
+                                    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)					 
+								 
                                     and o.value_coded in (1088,1087)
-								    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 
                                     and o.obs_group_id in (
                                         select oss.obs_group_id
@@ -335,11 +393,15 @@ union
                                             else 'Not_Tested' end as Contact_HIV_Status,
                                             o.obs_group_id as status_obs_group_id 
                             from obs o
-                                inner join person_name pn on o.person_id=pn.person_id 
-                                and o.voided=0
-                                and o.value_coded in (4783,4784,4785,4321) 
-							    and o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
+                                   INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+        
+                                AND o.voided=0   
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)					 
 
+                                and o.value_coded in (4783,4784,4785,4321) 
                                 and o.obs_group_id in (
                                         select oss.obs_group_id
                                         from obs oss inner join person p on oss.person_id=p.person_id 

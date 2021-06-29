@@ -30,10 +30,15 @@ FROM (
                             -- Get elicited contact first name for the Index Client
                             SELECT Id,first_name_set.given_name, first_name_set.family_name, first_name_set.concept_id, firstname, surname, first_name_set.obs_group_id from
                             (   
-                                 select obs_id, o.person_id as Id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided  from obs o
-                                    inner join person_name pn ON o.person_id=pn.person_id 
-                                    AND o.voided=0
-                                    AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE)
+                                 select obs_id, o.person_id as Id, given_name, family_name, concept_id, value_text as firstname, obs_group_id, o.voided 
+                                 from obs o
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+                                
+                                AND o.voided=0
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)		
                                                                     
                                     where concept_id in (4761)
                                 group by obs_group_id
@@ -42,11 +47,15 @@ FROM (
                             inner join 
                             (   
                                 -- Get elicited contact surname for the Index Client
-                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  from obs o
-                                inner join person_name pn ON o.person_id=pn.person_id 
+                                select obs_id, o.person_id, given_name, family_name, concept_id, value_text as surname, obs_group_id, o.voided  
+                                from obs o
+                                    INNER JOIN patient ON o.person_id = patient.patient_id 
+                                    INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                    INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+                                
                                 AND o.voided=0
-                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE)								 
-
+                                AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)		
                                 where concept_id in (4762) 
                                 group by obs_group_id
                             ) as surname_set 

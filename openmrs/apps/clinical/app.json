@@ -442,6 +442,45 @@
 			"Testing Eligibility, Reinforced Prevention Counselling" : {
 				"required": true
 			},
+			"HTSIDX, Contact Firstname": {
+				"required": true
+			},
+			"HTSIDX, Contact Surname": {
+				"required": true
+			},
+			"HTSIDX, Relationship to Index": {
+				"required": true
+			},
+			"HTSIDX, Age of Partner/Child": {
+				"required": true
+			},
+			"HTSIDX, Sex of Partner/Child": {
+				"required": true
+			},
+			"HTSIDX, Prior Tested Before Status": {
+				"required": true
+			},
+			"HTSIDX, Prior Test Result": {
+				"required": true
+			},
+			"HTSIDX, Duration since last test": {
+				"required": true
+			},
+			"HTSIDX,Tested": {
+				"required": true
+			},
+			"HTSIDX, IF No, why": {
+				"required": true
+			},
+			"HTSIDX,Date partner/child tested": {
+				"required": true
+			},
+			"HTSIDX,Partner/ Child Test Result": {
+				"required": true
+			},
+			"HTSIDX,Linked to care and treatment": {
+				"required": true
+			},
 			"defaults": {
 				"Number of living children": 1,
 				"Accepted Family Planning methods": [
