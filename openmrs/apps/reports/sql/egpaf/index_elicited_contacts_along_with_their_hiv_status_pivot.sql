@@ -293,7 +293,7 @@ FROM(
                                             inner join
                                                 (
                                                     -- Contact newly tested for HIV
-                                                    select obs_id, o.person_id, 
+                                                    select obs_id, o.person_id,  
                                                                     case 
                                                                     when value_coded = 1738 then 'New_Positive'
                                                                     when value_coded = 1016 then 'New_Negative'
@@ -302,12 +302,12 @@ FROM(
                                                                     o.obs_group_id as status_obs_group_id 
                                                     from obs o
                                                          INNER JOIN patient ON o.person_id = patient.patient_id 
-                                                                INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-                                                                INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
-                                                                INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
+                                                            INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                                            INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type IN (3,5) AND patient_identifier.preferred=1
                                 
-                                                            AND o.voided=0   
-                                                            AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)					 
+                                                        AND o.voided=0   
+                                                        AND o.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)					 
 
                                                         and o.value_coded in (1738,1016,4220)
                                                         and o.obs_group_id in (
