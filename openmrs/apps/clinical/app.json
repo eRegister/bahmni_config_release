@@ -450,6 +450,15 @@
 			"Testing Eligibility, Reinforced Prevention Counselling" : {
 				"required": true
 			},
+			"1st Dose":{
+				"multiSelect": true
+			},
+			"2nd Dose":{
+				"multiSelect": true
+			},
+			"3rd Dose":{
+				"multiSelect": true
+			},
 			"defaults": {
 				"Number of living children": 1,
 				"Accepted Family Planning methods": [
