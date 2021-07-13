@@ -17,6 +17,7 @@
             "activeVisitUuid"
         ],
         "config" : {
+            "readOnlyExtraIdentifiers": ["New HIV Program ID"],
             "patientInformation": {
                 "additionalPatientInformation": {
                     "title": "Additional Patient Information",
