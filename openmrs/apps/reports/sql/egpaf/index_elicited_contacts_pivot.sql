@@ -81,7 +81,7 @@ FROM (
                                         from obs oss inner join person p ON oss.person_id=p.person_id 
                                         AND oss.concept_id = 4769 
                                         AND oss.voided=0
-                                        AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE) 
+                                        AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                             )
                                 
                             where concept_id = 4769
@@ -111,7 +111,7 @@ FROM (
                                     from obs oss inner join person p ON oss.person_id=p.person_id 
                                     AND oss.concept_id = 4769 
                                     AND oss.voided=0 
-                                    AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE)
+                                    AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
                         )
 
                         group by obs_group_id 
@@ -202,7 +202,7 @@ FROM (
                                         from obs oss inner join person p ON oss.person_id=p.person_id 
                                         AND oss.concept_id = 4769 
                                         AND oss.voided=0
-                                        AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE) 
+                                        AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE) 
                             )
                                 
                             where concept_id = 4769
@@ -232,7 +232,7 @@ FROM (
                                     from obs oss inner join person p ON oss.person_id=p.person_id 
                                     AND oss.concept_id = 4769 
                                     AND oss.voided=0 
-                                    AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('2021-02-28' AS DATE)
+                                    AND oss.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
                         )
 
                         group by obs_group_id 
