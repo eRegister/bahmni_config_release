@@ -97,6 +97,8 @@ FROM
 								and o.person_id not in (
 									select person_id from 
 									obs where concept_id = 4269
+									and voided = 0 
+									and obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
 								)
 
 								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
