@@ -199,14 +199,18 @@ FROM
 						 -- begin
 						select active_clients.person_id
 								from
-								(select a.person_id, SUBSTRING(MAX(CONCAT(b.obs_datetime, b.value_datetime)), 20) AS latest_follow_up
-									from obs a, obs b
-									where a.person_id = b.person_id
-									and a.concept_id = 3753
-									and b.concept_id = 3752
-									and a.obs_datetime = b.obs_datetime
-									and a.obs_datetime <= cast('#endDate#'as date)
-									group by a.person_id
+								(select B.person_id, B.obs_group_id, B.value_datetime AS latest_follow_up
+									from obs B
+									inner join 
+									(select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+									from obs where concept_id = 3753
+									and obs_datetime <= cast('#endDate#' as date)
+									group by person_id) as A
+									on A.observation_id = B.obs_group_id
+									where concept_id = 3752
+									and A.observation_id = B.obs_group_id
+                                    and voided = 0	
+									group by B.person_id
 								) as active_clients
 								where active_clients.latest_follow_up < cast('#endDate#' as date)
 								and DATEDIFF(CAST('#endDate#' AS DATE),latest_follow_up) <= 28
@@ -641,14 +645,18 @@ UNION
 						 -- begin
 						select active_clients.person_id
 								from
-								(select a.person_id, SUBSTRING(MAX(CONCAT(b.obs_datetime, b.value_datetime)), 20) AS latest_follow_up
-									from obs a, obs b
-									where a.person_id = b.person_id
-									and a.concept_id = 3753
-									and b.concept_id = 3752
-									and a.obs_datetime = b.obs_datetime
-									and a.obs_datetime <= cast('#endDate#'as date)
-									group by a.person_id
+								(select B.person_id, B.obs_group_id, B.value_datetime AS latest_follow_up
+									from obs B
+									inner join 
+									(select person_id, max(obs_datetime), SUBSTRING(MAX(CONCAT(obs_datetime, obs_id)), 20) AS observation_id
+									from obs where concept_id = 3753
+									and obs_datetime <= cast('#endDate#' as date)
+									group by person_id) as A
+									on A.observation_id = B.obs_group_id
+									where concept_id = 3752
+									and A.observation_id = B.obs_group_id
+                                    and voided = 0	
+									group by B.person_id
 								) as active_clients
 								where active_clients.latest_follow_up < cast('#endDate#' as date)
 								and DATEDIFF(CAST('#endDate#' AS DATE),latest_follow_up) <= 28
