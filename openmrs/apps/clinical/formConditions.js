@@ -448,7 +448,7 @@ Bahmni.ConceptSet.FormConditions.rules = {
                         if (AncVisits == "ANC, First Visit") {
                                 conditions.show.push("Lesotho Obstetric Record")
                                 conditions.hide.push("ANC Register");
-                                conditions.disable.push("ANC, Estimated Date of Delivery");
+                                //conditions.disable.push("ANC, Estimated Date of Delivery");
                                 return conditions;
                         }
                         else if (AncVisits == "ANC, Subsequent Visit") {
