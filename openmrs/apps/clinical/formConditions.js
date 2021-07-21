@@ -164,6 +164,48 @@ Bahmni.ConceptSet.FormConditions.rules = {
                 }
                 return conditions;
         },
+
+
+        /**** AUTOFILL ANC PROGRAM REGISTER VALUES */
+        'ANC, Obstetric History': function (formName, formFieldValues) {
+                var conditions = { assignedValues: [] , disable: [] };
+                if (formName == "ANC, ANC Program" || formName=="ANC, Obstetric History" || formName=="Lesotho Obstetric Record" ){
+                        conditions.assignedValues.push(
+                        { field: "Delivery Note, Delivery location", fieldValue: "AutoFill"},
+                        { field: "ANC, Pregnancy History Date", fieldValue: "AutoFill"},
+                        { field: "ANC, Estimated Date of Delivery", fieldValue: "AutoFill"},
+                        { field: "ANC, Parity", fieldValue: "AutoFill"},
+                        { field: "ANC, Gravida", fieldValue: "AutoFill"},
+                        { field: "ANC, Alive", fieldValue: "AutoFill"}); }
+                        
+                return conditions;
+        },
+
+
+        /**** AUTOFILL UNDER 5 REGISTER VALUES */
+        'PMTCT, Date of Death': function (formName, formFieldValues) {
+                var conditions = { assignedValues: [] , disable: [] };
+                if (formName == "Under5, Personal Information" || formName=="under5 Register"){
+                        conditions.assignedValues.push(
+                        { field: "ANC, Unique Number", fieldValue: "AutoFill"},
+                        { field: "Under5 Number", fieldValue: "AutoFill"},
+                        { field: "Delivery Note, Delivery location", fieldValue: "AutoFill"},
+                        { field: "Mode of Delivery", fieldValue: "AutoFill"},
+                        { field: "PMTCT, Date of Death", fieldValue: "AutoFill"}); }
+                return conditions;
+        },  
+
+        /**** AUTOFILL PNC REGISTER VALUES */
+        'Delivery Information': function (formName, formFieldValues) {
+                var conditions = { assignedValues: [] , disable: [] };
+                if (formName == "PostNatal Care Register" || formName=="Delivery Information"){
+                        conditions.assignedValues.push(
+                        { field: "Delivery date and time", fieldValue: "AutoFill"},
+                        { field: "Delivery Note, Delivery location", fieldValue: "AutoFill"}); }
+                return conditions;
+        },  
+
+                
         'ANC, Parity': function (formName, formFieldValues) {
                 var ANCGravida1 = formFieldValues['ANC, Gravida'];
                 var ANCParity = formFieldValues['ANC, Parity'];
@@ -1445,7 +1487,6 @@ Bahmni.ConceptSet.FormConditions.rules = {
                                 conditions.hide.push("Testing Eligibility, On ART Treatment");
                                 conditions.hide.push("Offered prevention Counselling and or Linked to prevention services")
                                 conditions.hide.push("Test For HIV");
-                                console.log(strategy)
 
                         }
 
