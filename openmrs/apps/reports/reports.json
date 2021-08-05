@@ -167,6 +167,14 @@
         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_positive_clients_linked_to_care_list.sql"
                 }
         },
+  
+  "selftestclientslist": {
+          "name": "Self Test Clients(List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_list.sql"
+                    }
+            },
 
   "selftestpositiveclientslist": {
           "name": "Self Test Clients Confirmed Positive (List)",
