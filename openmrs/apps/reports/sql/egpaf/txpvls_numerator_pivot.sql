@@ -63,6 +63,7 @@ FROM (
 							AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 					WHERE observed_age_group.report_group_name = 'Modified_Ages') as suppressed_vl_results
 				where VL_Result is not null
+				group by Id
 	) AS TXPVLS_DETAILS
 	GROUP BY TXPVLS_DETAILS.age_group
 	ORDER BY TXPVLS_DETAILS.sort_order)
@@ -127,6 +128,7 @@ FROM (
 							AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 					WHERE observed_age_group.report_group_name = 'Modified_Ages') as suppressed_vl_results
 				where VL_Result is not null
+				group by Id
 	  ) AS TXPVLS_TOTALS)
 ) AS Total_Aggregated_TxPVLS
 ORDER BY Total_Aggregated_TxPVLS.sort_order

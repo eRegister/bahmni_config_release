@@ -1,6 +1,6 @@
 select patientIdentifier, patientName, Age, Gender, age_group, VL_Result, Indication, encounter_date
 from 
-	(select distinct o.person_id AS Id,
+	(select distinct o.person_id,
 						patient_identifier.identifier AS patientIdentifier,
 						concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 						floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -45,3 +45,4 @@ from
 			AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 	WHERE observed_age_group.report_group_name = 'Modified_Ages') as suppressed_vl_results
 where VL_Result is not null
+group by person_id

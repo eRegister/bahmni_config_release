@@ -26,13 +26,14 @@ FROM (
 									   IF(latest_indication_vl = 4281, 'Routine', 'Targeted') as Indication,
 									   cast(obs_vl_latest.max_observation as DATE) as encounter_date,
 									   observed_age_group.sort_order AS sort_order
+
 				from obs o 
 					INNER JOIN
 					(
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_coded)), 20) AS latest_vl_result
 						from obs oss
 						where oss.concept_id = 4266 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_vl_latest on o.person_id = obs_vl_latest.person_id
 					INNER JOIN
@@ -40,7 +41,7 @@ FROM (
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_coded)), 20) AS latest_indication_vl
 						from obs oss
 						where oss.concept_id = 4280 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_routine_latest_vl on o.person_id = obs_routine_latest_vl.person_id
 					LEFT JOIN
@@ -48,7 +49,7 @@ FROM (
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_numeric)), 20) AS latest_numeric_vl_result
 						from obs oss
 						where oss.concept_id = 2254 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_vl_numeric_latest on o.person_id = obs_vl_numeric_latest.person_id	
 					INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
@@ -58,6 +59,7 @@ FROM (
 						CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 				WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				GROUP BY o.person_id
 	) AS TXPVLS_DETAILS
 	GROUP BY TXPVLS_DETAILS.age_group
 	ORDER BY TXPVLS_DETAILS.sort_order)
@@ -85,13 +87,14 @@ FROM (
 									   IF(latest_indication_vl = 4281, 'Routine', 'Targeted') as Indication,
 									   cast(obs_vl_latest.max_observation as DATE) as encounter_date,
 									   observed_age_group.sort_order AS sort_order
+
 				from obs o 
 					INNER JOIN
 					(
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_coded)), 20) AS latest_vl_result
 						from obs oss
 						where oss.concept_id = 4266 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_vl_latest on o.person_id = obs_vl_latest.person_id
 					INNER JOIN
@@ -99,7 +102,7 @@ FROM (
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_coded)), 20) AS latest_indication_vl
 						from obs oss
 						where oss.concept_id = 4280 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_routine_latest_vl on o.person_id = obs_routine_latest_vl.person_id
 					LEFT JOIN
@@ -107,7 +110,7 @@ FROM (
 						select oss.person_id, MAX(oss.obs_datetime) as max_observation, SUBSTRING(MAX(CONCAT(oss.obs_datetime, oss.value_numeric)), 20) AS latest_numeric_vl_result
 						from obs oss
 						where oss.concept_id = 2254 and oss.voided=0
-						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND CAST('#endDate#' AS DATE)
+						and oss.obs_datetime BETWEEN DATE(DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -12 MONTH)) AND cast('#endDate#' as date)
 						group by oss.person_id
 					) as obs_vl_numeric_latest on o.person_id = obs_vl_numeric_latest.person_id	
 					INNER JOIN person ON person.person_id = o.person_id AND person.voided = 0
@@ -117,8 +120,7 @@ FROM (
 						CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
 				WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				GROUP BY o.person_id
 	  ) AS TXPVLS_TOTALS)
-
-	  
 ) AS Total_Aggregated_TxPVLS
 ORDER BY Total_Aggregated_TxPVLS.sort_order
