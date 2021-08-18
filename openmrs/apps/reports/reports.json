@@ -63,6 +63,14 @@
     }
    },
    
+  "ART_report_regimen": {
+    "name": "Current on ART with regimens (Pivot)",
+    "type": "MRSGeneric",
+    "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/includeregimen_with_weight_pivot.sql"
+   }
+  },
+   
  "viralloadresultsstatuslist": {
      "name": "Viral Load Results Status, within 3 months (List)",
      "type": "MRSGeneric",
@@ -159,6 +167,31 @@
         "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_positive_clients_linked_to_care_list.sql"
                 }
         },
+  
+  "selftestclientslist": {
+          "name": "Self Test Clients(List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_list.sql"
+                    }
+            },
+
+  "selftestpositiveclientslist": {
+          "name": "Self Test Clients Confirmed Positive (List)",
+          "type": "MRSGeneric",
+          "config": {
+            "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_confirmed_positives_list.sql"
+                    }
+            },
+
+  "selftestpositiveclientspivot": {
+              "name": "Self Test Clients Confirmed Positive  (Pivot)",
+              "type": "MRSGeneric",
+              "config": {
+                "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_confirmed_positives_pivot.sql"
+                        }
+                },
+                  
 
   "registeredartclientswithartconsultation_process": {
       "name": "Registered ART Visits with ART Consultation (List)",
@@ -215,14 +248,6 @@
        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/monitoring.sql"
       }
      },
-	 
- "temp_mmd_monitoring_tool": {
-     "name": "temp_mmd_monitoring_subquery",
-     "type": "MRSGeneric",
-     "config": {
-       "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/temp_monitoring_mmd.sql"
-      }
-     },	 
 
  "detection_TB": {
      "name": "TB Case Detection ",
@@ -447,14 +472,6 @@
        }
       },
  
-    "hts_dqa": {
-        "name": "HTS DATA QUALITY ASSESSMENT",
-        "type": "MRSGeneric",
-        "config": {
-          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/HTS.sql"
-        }
-       },
-
    "pmtct_eid_list": {
        "name": " PMTCT EID (List)",
        "type": "MRSGeneric",
@@ -668,22 +685,6 @@
           "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_combined_list.sql"
       }
   },
-  
-  "txcurretentionpivot_pepfar": {
-      "name": "TX_CURR Retention (Pivot)",
-      "type": "MRSGeneric",
-      "config": {
-          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_retention_pivot.sql"
-      }
-  },
-
-  "txcurretentionlist_perfar": {
-      "name": "TX_CURR Retention (List)",
-      "type": "MRSGeneric",
-      "config": {
-          "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txcurr_retention_list.sql"
-      }
-  },  
 
   "txcurrmmd_list": {
       "name": "TX_CURR MMD (List)",
@@ -779,5 +780,118 @@
       "config": {
           "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/egpaf/txpvls_denominator_pivot.sql"
       }
+  },
+
+  "DHIS_Pre_ART": {
+    "name": "Pre-ART",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION1.sql"
+    }
+  },
+  
+  "DHIS_ART_CARE_A": {
+    "name": "ART CARE - NEW AND CURRENT ON ART",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION2.sql"
+    }
+  },
+  
+  "DHIS_ART_CARE_B": {
+    "name": "ART CARE - NEW AND CURRENT ON ART_SECTION B",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION2b.sql"
+    }
+  },
+  
+  "DHIS_TB_SCREENING": {
+    "name": "TB SCREENING",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION3.sql"
+    }
+  },
+  
+  "DHIS_ADULT_Regimen": {
+    "name": "ADULT REGIMENS",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/Regimen_Report_with_Age_Restrictions.sql"
+    }
+  },
+  
+  "DHIS_Children_Regimen": {
+    "name": "CHILDREN REGIMENS",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/Children_Regimen_Report_with_Weight.sql"
+    }
+  },
+  
+  "DHIS_CTX": {
+    "name": "COTRIMOX PROPHYLAXIS/DAPSONE",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION8.sql"
+    }
+  },
+  
+  "DHIS_NUTRITIONAL_SUPPLEMENT": {
+    "name": "NUTRITIONAL SUPPLEMENT",
+    "type": "MRSGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/SECTION9.sql"
+    }   
+  },
+
+  "arv_list": {
+    "name": "Pharmacy ARV Regimen",
+    "type": "ERPGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/ARVs.sql"
+    }
+},
+
+  "arv_dispensing_list": {
+    "name": " Pharmacy ARV Dispensing Report",
+    "type": "ERPGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/arv_dispensing.sql"
+    }
+    },
+
+"batch_numbers": {
+    "name": " Dispensing Orders report",
+    "type": "ERPGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/batch.sql"
+    }
+},
+
+"tally_numbers": {
+    "name": " Dispensing Summary Report",
+    "type": "ERPGeneric",
+    "config": {
+        "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/tally.sql"
+    }
+},
+
+"test": {
+  "name": " Test",
+  "type": "MRSGeneric",
+  "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/test.sql"
   }
+},
+
+"test1": {
+  "name": " Test1",
+  "type": "MRSGeneric",
+  "config": {
+      "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/test_.sql"
+  }
+}
+
 }
