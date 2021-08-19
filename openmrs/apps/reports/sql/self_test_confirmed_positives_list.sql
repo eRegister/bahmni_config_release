@@ -1,4 +1,4 @@
- (SELECT patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
+ (SELECT distinct patientIdentifier AS "Patient_Identifier", patientName AS "Patient_Name", Age, Gender, age_group, 'Self-test' AS 'HIV_Testing_Initiation'
                                     , HIV_Status
                     FROM
                                     (select distinct patient.patient_id AS Id,
@@ -28,8 +28,8 @@
                                             )
                                             
                                             INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-                                            INNER JOIN person_name ON person.person_id = person_name.person_id
-                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+                                            INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
                                             INNER JOIN reporting_age_group AS observed_age_group ON
                                             CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
                                             AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))

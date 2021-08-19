@@ -15,7 +15,7 @@ FROM
 	FROM
 
          (
-                    Select Id, Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status,Distribution_Date,sort_order
+                    Select distinct Id, Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status,sort_order
             from(
             SELECT Id,Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation  , HIV_Status,sort_order
             FROM (
@@ -49,8 +49,8 @@ FROM
                                             )
                                             
                                             INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-                                            INNER JOIN person_name ON person.person_id = person_name.person_id
-                                            INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+											INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+											INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
                                             INNER JOIN reporting_age_group AS observed_age_group ON
                                             CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
                                             AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -62,16 +62,7 @@ FROM
             ORDER BY HTS_Status_Detailed.HIV_Testing_Initiation
                         , HTS_Status_Detailed.sort_order) AS SelfTest
 
-            -- DISTRIBUTION DATE
-            left outer join
-                (
-                select patient.patient_id,CAST(o.value_datetime AS DATE) as Distribution_Date 
-                from obs o
-                INNER JOIN patient ON o.person_id = patient.patient_id
-                where o.concept_id = 4824
-                ) as distibutedDate
-                on SelfTest.Id = distibutedDate.patient_id
-) AS HTS_DETAILS
+        ) AS HTS_DETAILS
 
 	GROUP BY HTS_DETAILS.age_group
 	ORDER BY HTS_DETAILS.sort_order)
@@ -99,7 +90,7 @@ FROM
 
 		(
 
-                            Select Id, Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status,Distribution_Date,sort_order
+                            Select distinct Id, Patient_Identifier, Patient_Name,Age, Gender, age_group,HIV_Testing_Initiation, HIV_Status,sort_order
                     from(
                     SELECT Id,Patient_Identifier, Patient_Name, Age, Gender, age_group, HIV_Testing_Initiation  , HIV_Status,sort_order
                     FROM (
@@ -133,8 +124,8 @@ FROM
                                                     )
                                                     
                                                     INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-                                                    INNER JOIN person_name ON person.person_id = person_name.person_id
-                                                    INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+													INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+													INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
                                                     INNER JOIN reporting_age_group AS observed_age_group ON
                                                     CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
                                                     AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -147,16 +138,6 @@ FROM
                     ) AS HTS_Status_Detailed
                     ORDER BY HTS_Status_Detailed.HIV_Testing_Initiation
                                 , HTS_Status_Detailed.sort_order) AS SelfTest
-
-                    -- DISTRIBUTION DATE
-                    left outer join
-                        (
-                        select patient.patient_id,CAST(o.value_datetime AS DATE) as Distribution_Date 
-                        from obs o
-                        INNER JOIN patient ON o.person_id = patient.patient_id
-                        where o.concept_id = 4824
-                        ) as distibutedDate
-                        on SelfTest.Id = distibutedDate.patient_id
 
                             ) AS Total_HTS
   ) AS Totals
