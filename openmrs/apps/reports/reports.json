@@ -191,8 +191,15 @@
                 "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/self_test_confirmed_positives_pivot.sql"
                         }
                 },
-                  
 
+  "htsdqa": {
+               "name": "HTS Data Quality Assessment Tool",
+               "type": "MRSGeneric",
+               "config": {
+                  "sqlPath": "/var/www/bahmni_config/openmrs/apps/reports/sql/hts_dqa.sql"
+                         }
+                 },
+                  
   "registeredartclientswithartconsultation_process": {
       "name": "Registered ART Visits with ART Consultation (List)",
       "type": "MRSGeneric",
