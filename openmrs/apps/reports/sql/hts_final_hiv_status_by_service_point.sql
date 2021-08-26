@@ -28,7 +28,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -38,12 +38,12 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -81,7 +81,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -91,12 +91,12 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -132,7 +132,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEATER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -142,12 +142,12 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -185,7 +185,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -195,11 +195,11 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -236,7 +236,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -246,13 +246,13 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								  
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -290,7 +290,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -300,12 +300,12 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -341,7 +341,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEATER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -351,13 +351,13 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -395,7 +395,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -405,12 +405,12 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3
+								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
 								 INNER JOIN reporting_age_group AS observed_age_group ON
 								  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 								  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
@@ -420,9 +420,10 @@ FROM (
 
 ) AS HTS_Status_Detailed
 
-ORDER BY HTS_Status_Detailed.HIV_Testing_Initiation
+ORDER BY  HTS_Status_Detailed.HIV_Status desc
+			, HTS_Status_Detailed.HIV_Testing_Initiation desc
 			, HTS_Status_Detailed.Testing_History
 			, HTS_Status_Detailed.sort_order
 			, HTS_Status_Detailed.Gender
-			, HTS_Status_Detailed.HIV_Status
+			
 

@@ -30,7 +30,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -40,7 +40,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -83,7 +83,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -93,7 +93,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -134,7 +134,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEATER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -144,7 +144,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -187,7 +187,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4227
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -197,7 +197,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
 								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
@@ -238,7 +238,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -248,7 +248,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								  
                                  
@@ -292,7 +292,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -302,7 +302,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -343,7 +343,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- REPEATER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -353,7 +353,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								
                                  
@@ -397,7 +397,7 @@ FROM (
 									where os.concept_id = 4228 and os.value_coded = 4226
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 -- NEW TESTER, DOES NOT HAVE HISTORY OF PREVIOUS TESTING
@@ -407,7 +407,7 @@ FROM (
 									where os.concept_id = 2137 and os.value_coded = 2147
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -463,7 +463,7 @@ FROM (
 									where os.concept_id = 4844 and os.value_coded = 1738
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
 								 AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -503,7 +503,7 @@ UNION
 									where os.concept_id = 4844 and os.value_coded = 1016
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
 								 AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -544,7 +544,7 @@ UNION
 									where os.concept_id = 4844 and os.value_coded = 2148
 									AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
 								 AND YEAR(o.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -591,7 +591,7 @@ ORDER BY HTS_Status_Detailed.HIV_Status desc
 									where os.concept_id = 2386 -- and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 AND o.person_id in (
 									select distinct os.person_id
@@ -599,7 +599,7 @@ ORDER BY HTS_Status_Detailed.HIV_Status desc
 									where os.concept_id = 4817 and os.value_coded = 1016
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -642,7 +642,7 @@ ORDER BY HTS_Status_Detailed.HIV_Status desc
 									where os.concept_id = 2386 -- and os.value_coded = 2146
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
 								 AND o.person_id in (
 									select distinct os.person_id
@@ -650,7 +650,7 @@ ORDER BY HTS_Status_Detailed.HIV_Status desc
 									where os.concept_id = 4817 and os.value_coded = 1738
 									AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
                             		AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-									AND patient.voided = 0 AND o.voided = 0
+									AND patient.voided = 0 AND os.voided = 0
 								 )
                                  
 								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
