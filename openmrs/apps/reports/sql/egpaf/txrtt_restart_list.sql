@@ -85,4 +85,5 @@ FROM
 						 INNER JOIN reporting_age_group AS observed_age_group ON
 						 CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						 AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE 	observed_age_group.report_group_name = 'Modified_Ages') AS TwentyEightDayDefaulters)
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages'
+				   group by patient.patient_id) AS TwentyEightDayDefaulters)
