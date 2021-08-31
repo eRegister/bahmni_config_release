@@ -229,7 +229,7 @@ FROM
 
 			UNION
 
-			(SELECT Id, patientIdentifier, patientName, Age, Gender, age_group, 'LFTU<3m' AS Outcome, sort_order
+			(SELECT Id, patientIdentifier, patientName, Age, Gender, age_group, 'IIT<3m' AS Outcome, sort_order
 			FROM
 							(select obs_ml_clients.person_id AS Id,
 												   patient_identifier.identifier AS patientIdentifier,
@@ -297,7 +297,7 @@ FROM
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 2249
-											AND datediff(CAST('#startDate#' AS DATE), os.value_datetime) BETWEEN 0 AND 90						
+											AND datediff(CAST('#endDate#' AS DATE), os.value_datetime) BETWEEN 0 AND 90						
 									 )
 									 -- NOT Transfered Out to Another Site
 									 AND obs_ml_clients.person_id not in (
@@ -312,7 +312,7 @@ FROM
 					  
 			UNION
 
-			(SELECT Id, patientIdentifier, patientName, Age, Gender, age_group, 'LFTU>3m' AS Outcome, sort_order
+			(SELECT Id, patientIdentifier, patientName, Age, Gender, age_group, 'IIT>3m' AS Outcome, sort_order
 			FROM
 							(select obs_ml_clients.person_id AS Id,
 												   patient_identifier.identifier AS patientIdentifier,
@@ -380,7 +380,7 @@ FROM
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 2249
-											AND datediff(CAST('#startDate#' AS DATE), os.value_datetime) >= 90						
+											AND datediff(CAST('#endDate#' AS DATE), os.value_datetime) >= 90						
 									 )	
 									 -- NOT Transfered Out to Another Site
 									 AND obs_ml_clients.person_id not in (
