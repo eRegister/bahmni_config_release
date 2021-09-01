@@ -24,7 +24,7 @@ FROM
 															 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 															 and oss.obs_datetime < cast('#startDate#' as DATE)
 															 group by p.person_id
-															 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
+															 having datediff(CAST(DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -1 DAY) AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
 												 )
 												 AND o.person_id in (
 													select person_id
@@ -67,7 +67,7 @@ FROM
 									 AND obs_ml_clients.person_id in (
 											select person_id 
 											from person 
-											where death_date >= CAST('#startDate#' AS DATE) AND death_date <= CAST('#endDate#' AS DATE)
+											where death_date <= CAST('#endDate#' AS DATE)
 											and dead = 1
 									 )
 							    GROUP BY obs_ml_clients.person_id
@@ -99,7 +99,7 @@ FROM
 															 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 															 and oss.obs_datetime < cast('#startDate#' as DATE)
 															 group by p.person_id
-															 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
+															 having datediff(CAST(DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -1 DAY) AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
 												 )
 												 AND o.person_id in (
 													select person_id
@@ -144,7 +144,14 @@ FROM
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 4155 and os.value_coded = 2146
-											AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+											AND os.obs_datetime <= CAST('#endDate#' AS DATE)						
+									 )
+									 -- NOT DEAD
+									 AND obs_ml_clients.person_id not in (
+											select person_id 
+											from person 
+											where death_date <= CAST('#endDate#' AS DATE)
+											and dead = 1
 									 )
 							    GROUP BY obs_ml_clients.person_id
 
@@ -176,7 +183,7 @@ FROM
 															 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 															 and oss.obs_datetime < cast('#startDate#' as DATE)
 															 group by p.person_id
-															 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
+															 having datediff(CAST(DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -1 DAY) AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
 												 )
 												 AND o.person_id in (
 													select person_id
@@ -252,7 +259,7 @@ FROM
 															 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 															 and oss.obs_datetime < cast('#startDate#' as DATE)
 															 group by p.person_id
-															 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
+															 having datediff(CAST(DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -1 DAY) AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
 												 )
 												 AND o.person_id in (
 													select person_id
@@ -304,7 +311,14 @@ FROM
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 4155 and os.value_coded = 2146
-											AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+											AND os.obs_datetime <= CAST('#endDate#' AS DATE)						
+									 )
+									 -- NOT DEAD
+									 AND obs_ml_clients.person_id not in (
+											select person_id 
+											from person 
+											where death_date <= CAST('#endDate#' AS DATE)
+											and dead = 1
 									 )
 							    GROUP BY obs_ml_clients.person_id
 							   ) AS TxMLClients
@@ -335,7 +349,7 @@ FROM
 															 inner join person p on oss.person_id=p.person_id and oss.concept_id = 3752 and oss.voided=0
 															 and oss.obs_datetime < cast('#startDate#' as DATE)
 															 group by p.person_id
-															 having datediff(CAST('#startDate#' AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
+															 having datediff(CAST(DATE_ADD(CAST('#startDate#' AS DATE), INTERVAL -1 DAY) AS DATE), latest_follow_up) < 29) as On_ART_Beginning_Quarter
 												 )
 												 AND o.person_id in (
 													select person_id
@@ -381,13 +395,20 @@ FROM
 											from obs os
 											where os.concept_id = 2249
 											AND datediff(CAST('#endDate#' AS DATE), os.value_datetime) >= 90						
-									 )	
+									 )
 									 -- NOT Transfered Out to Another Site
 									 AND obs_ml_clients.person_id not in (
 											select distinct os.person_id 
 											from obs os
 											where os.concept_id = 4155 and os.value_coded = 2146
-											AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)						
+											AND os.obs_datetime <= CAST('#endDate#' AS DATE)						
+									 )
+									 -- NOT DEAD
+									 AND obs_ml_clients.person_id not in (
+											select person_id 
+											from person 
+											where death_date <= CAST('#endDate#' AS DATE)
+											and dead = 1
 									 )
 							    GROUP BY obs_ml_clients.person_id
 							   ) AS TxMLClients
