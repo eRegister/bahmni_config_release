@@ -47,7 +47,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -56,7 +56,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -96,7 +96,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
@@ -105,7 +105,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -145,7 +145,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -154,7 +154,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )						 
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -193,7 +193,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
@@ -202,7 +202,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )						 
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -258,7 +258,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -267,7 +267,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -300,7 +300,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4227
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
@@ -309,7 +309,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -342,7 +342,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- REPEAT TESTER, HAS A HISTORY OF PREVIOUS TESTING
@@ -351,7 +351,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2146
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )						 
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
@@ -384,7 +384,7 @@ FROM (
 												from obs os
 												where os.concept_id = 4228 and os.value_coded = 4226
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )
 											 
 											 -- NEW TESTER, DOES NOT HAVE A HISTORY OF PREVIOUS TESTING
@@ -393,7 +393,7 @@ FROM (
 												from obs os
 												where os.concept_id = 2137 and os.value_coded = 2147
 												AND os.obs_datetime BETWEEN CAST('#startDate#' AS DATE) AND CAST('#endDate#' AS DATE)
-												AND patient.voided = 0 AND o.voided = 0
+												AND patient.voided = 0 AND os.voided = 0
 											 )						 
 											 
 											 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
