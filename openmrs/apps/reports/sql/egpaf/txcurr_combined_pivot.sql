@@ -407,13 +407,17 @@ FROM
 
 		(
 
-		(select distinct patient.patient_id AS Id,
-											   patient_identifier.identifier AS patientIdentifier,
-											   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-											   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-											   person.gender AS Gender,
-											   'Initiated' AS Program_Status
-						from obs o
+		(SELECT  Id, patientIdentifier , patientName, Age, Gender, age_group, 'Initiated' AS 'Program_Status', sort_order
+	FROM
+                 (select distinct patient.patient_id AS Id,
+									   patient_identifier.identifier AS patientIdentifier,
+									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+									   person.gender AS Gender,
+									   observed_age_group.name AS age_group,
+									   observed_age_group.sort_order AS sort_order
+
+                from obs o
 						-- CLIENTS NEWLY INITIATED ON ART
 						 INNER JOIN patient ON o.person_id = patient.patient_id 
 						 AND (o.concept_id = 2249 
@@ -428,113 +432,50 @@ FROM
 							AND os.value_coded = 2095 
 							AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
 							AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-						 )
-						 AND o.person_id not in 
-								(
-									select distinct(o.person_id)
-									from obs o
-									where o.person_id in (
-											-- FOLLOW UPS
-											select firstquery.person_id
-											from
-											(
-											select oss.person_id, SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, max(oss.value_datetime) as latest_followup_obs
-											from obs oss
-														where oss.voided=0 
-														and oss.concept_id=3752 
-														and oss.obs_datetime <= CAST('#endDate#' AS DATE)
-														and oss.obs_datetime > DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)
-														group by oss.person_id) firstquery
-											inner join (
-														select os.person_id,datediff(max(os.value_datetime), CAST('#endDate#' AS DATE)) as last_ap
-														from obs os
-														where concept_id = 3752
-														and os.obs_datetime <= CAST('#endDate#' AS DATE)
-														group by os.person_id
-														having last_ap < 0
-											) secondquery
-											on firstquery.person_id = secondquery.person_id
-									)
-									and o.person_id in (
-											-- Death
-														select distinct p.person_id
-														from person p
-														where dead = 1
-														and death_date <= CAST('#endDate#' AS DATE)		
-									)
-								)
-						AND o.person_id not in 
-							(
-									select distinct(o.person_id)
-									from obs o
-									where o.person_id in (
-											-- FOLLOW UPS
-											select firstquery.person_id
-											from
-											(
-											select oss.person_id, SUBSTRING(MAX(CONCAT(oss.value_datetime, oss.obs_id)), 20) AS observation_id, max(oss.value_datetime) as latest_followup_obs
-											from obs oss
-														where oss.voided=0 
-														and oss.concept_id=3752 
-														and oss.obs_datetime <= CAST('#endDate#' AS DATE)
-														and oss.obs_datetime > DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)
-														group by oss.person_id) firstquery
-											inner join (
-														select os.person_id,datediff(max(os.value_datetime), CAST('#endDate#' AS DATE)) as last_ap
-														from obs os
-														where concept_id = 3752
-														and os.obs_datetime <= CAST('#endDate#' AS DATE)
-														group by os.person_id
-														having last_ap < 0
-											) secondquery
-											on firstquery.person_id = secondquery.person_id
-									) 
-									and o.person_id in (
-											-- TOUTS
-											select distinct(person_id)
-											from
-											(
-												select os.person_id, max(os.value_datetime) as latest_transferout
-												from obs os
-												where os.concept_id=2266
-												group by os.person_id
-												having latest_transferout <= CAST('#endDate#' AS DATE)
-											) as TOUTS
-									)
-						)
-							 
-								 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-								 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
-								 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1)
+						 )	
+						 
+						 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+						 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+						 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+						 INNER JOIN reporting_age_group AS observed_age_group ON
+						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS Newly_Initiated_ART_Clients
+ORDER BY Newly_Initiated_ART_Clients.patientName)
 
 		UNION
 
 
-		(SELECT Id, patientIdentifier, patientName, Age, Gender, 'Seen' AS 'Program_Status'
-		FROM
+		(SELECT Id, patientIdentifier , patientName , Age, Gender, age_group, 'Seen' AS 'Program_Status', sort_order
+FROM (
 
-		(select distinct patient.patient_id AS Id,
-										   patient_identifier.identifier AS patientIdentifier,
-										   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
-										   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
-										   person.gender AS Gender
+select distinct patient.patient_id AS Id,
+                                   patient_identifier.identifier AS patientIdentifier,
+                                   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
+                                   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
+                                   person.gender AS Gender,
+                                   observed_age_group.name AS age_group,
+								   observed_age_group.sort_order AS sort_order
+        from obs o
+								-- CLIENTS SEEN FOR ART
+                                 INNER JOIN patient ON o.person_id = patient.patient_id
+                                 AND (o.concept_id = 3843 AND o.value_coded = 3841 OR o.value_coded = 3842)
+								 AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
+								 AND YEAR(o.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
+                                 AND patient.voided = 0 AND o.voided = 0
+                                 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
+                                 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
+                                 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1
+								 INNER JOIN reporting_age_group AS observed_age_group ON
+									  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
+									  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
+           WHERE observed_age_group.report_group_name = 'Modified_Ages'
 
-				from obs o
-										-- CLIENTS SEEN FOR ART
-										 INNER JOIN patient ON o.person_id = patient.patient_id
-										 AND (o.concept_id = 3843 AND o.value_coded = 3841 OR o.value_coded = 3842)
-										AND MONTH(o.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
-								 		AND YEAR(o.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-										 AND patient.voided = 0 AND o.voided = 0
-										 INNER JOIN person ON person.person_id = patient.patient_id AND person.voided = 0
-										 INNER JOIN person_name ON person.person_id = person_name.person_id AND person_name.preferred = 1
-										 INNER JOIN patient_identifier ON patient_identifier.patient_id = person.person_id AND patient_identifier.identifier_type = 3 AND patient_identifier.preferred=1					 
-										 
-		) AS Total_ClientsSeen
+) AS Clients_Seen
 
-		WHERE Total_ClientsSeen.Id not in (
-					select distinct patient.patient_id AS Id
-					from obs o
+WHERE Clients_Seen.Id not in (
+		select distinct patient.patient_id AS Id
+		from obs o
 				-- CLIENTS NEWLY INITIATED ON ART
 				 INNER JOIN patient ON o.person_id = patient.patient_id
 				 AND (o.concept_id = 2249 
@@ -542,14 +483,9 @@ FROM
 											AND YEAR(o.value_datetime) = YEAR(CAST('#endDate#' AS DATE))
 						)		
 				 AND patient.voided = 0 AND o.voided = 0
-				and patient.patient_id not in(
-											select distinct os.person_id from obs os															 
-											where os.concept_id = 2396 														 
-											AND MONTH(os.obs_datetime) = MONTH(CAST('#endDate#' AS DATE)) 
-											AND YEAR(os.obs_datetime) = YEAR(CAST('#endDate#' AS DATE))
-											)
+
 							)
-AND Total_ClientsSeen.Id not in (
+AND Clients_Seen.Id not in (
 							select distinct(o.person_id)
 							from obs o
 							where o.person_id in (
@@ -562,7 +498,7 @@ AND Total_ClientsSeen.Id not in (
 													where oss.voided=0 
 													and oss.concept_id=3752 
 													and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-													and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)
+													and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 													group by oss.person_id) firstquery
 										inner join (
 													select os.person_id,datediff(CAST(max(os.value_datetime) AS DATE), CAST('#endDate#' AS DATE)) as last_ap
@@ -584,14 +520,12 @@ AND Total_ClientsSeen.Id not in (
 										group by os.person_id
 										having latest_transferout <= CAST('#endDate#' AS DATE)
 									) as TOUTS
-							)
-							
-							
+							)				
 		)
 
-AND Total_ClientsSeen.Id not in 
+AND Clients_Seen.Id not in 
 					(
-						select distinct(o.person_id)
+							select distinct(o.person_id)
 						from obs o
 						where o.person_id in (
 								-- FOLLOW UPS
@@ -603,7 +537,7 @@ AND Total_ClientsSeen.Id not in
 														where oss.voided=0 
 														and oss.concept_id=3752 
 														and CAST(oss.obs_datetime AS DATE) <= CAST('#endDate#' AS DATE)
-														and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -7 MONTH)
+														and CAST(oss.obs_datetime AS DATE) >= DATE_ADD(CAST('#endDate#' AS DATE), INTERVAL -13 MONTH)
 														group by oss.person_id) firstquery
 											inner join (
 														select os.person_id,datediff(CAST(max(os.value_datetime) AS DATE), CAST('#endDate#' AS DATE)) as last_ap
@@ -623,14 +557,15 @@ AND Total_ClientsSeen.Id not in
 											and death_date <= CAST('#endDate#' AS DATE)		
 						)
 					)
+ORDER BY Clients_Seen.patientName
 		)
 
 UNION
 
 -- INCLUDE MISSED APPOINTMENTS WITHIN 28 DAYS ACCORDING TO THE NEW PEPFAR GUIDELINE
-(SELECT Id, patientIdentifier, patientName, Age, Gender, 'MissedWithin28Days' AS 'Program_Status'
-		FROM
-			(select distinct patient.patient_id AS Id,
+(SELECT Id, patientIdentifier , patientName , Age, Gender, age_group, 'MissedWithin28Days' AS 'Program_Status', sort_order
+FROM
+                (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
 									   floor(datediff(CAST('#endDate#' AS DATE), person.birthdate)/365) AS Age,
@@ -709,12 +644,13 @@ UNION
 						 INNER JOIN reporting_age_group AS observed_age_group ON
 						  CAST('#endDate#' AS DATE) BETWEEN (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.min_years YEAR), INTERVAL observed_age_group.min_days DAY))
 						  AND (DATE_ADD(DATE_ADD(person.birthdate, INTERVAL observed_age_group.max_years YEAR), INTERVAL observed_age_group.max_days DAY))
-                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS TwentyEightDayDefaulters)
+                   WHERE observed_age_group.report_group_name = 'Modified_Ages') AS TwentyEightDayDefaulters
+				   order by TwentyEightDayDefaulters.patientName)
 
 		UNION
 
-		(SELECT Id, patientIdentifier, patientName, Age, Gender, 'Seen_Prev_Months' AS 'Program_Status'
-		FROM
+		(SELECT Id, patientIdentifier , patientName , Age, Gender, age_group, 'Seen_Prev_Months' AS 'Program_Status', sort_order
+FROM
                 (select distinct patient.patient_id AS Id,
 									   patient_identifier.identifier AS patientIdentifier,
 									   concat(person_name.given_name, ' ', person_name.family_name) AS patientName,
